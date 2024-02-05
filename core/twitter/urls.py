@@ -5,6 +5,11 @@ from twitter.views import *
 app_name = "twitter"
 
 urlpatterns = [
-
+    path(
+        "",HomeView.as_view(),name= "home_page"
+    ),
+    path(
+        "about/",Aboutpage.as_view(),name="about"
+    ),
 
 ]

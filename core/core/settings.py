@@ -37,8 +37,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # My apps
     "accounts.apps.AccountsConfig",
     "twitter.apps.TwitterConfig",
+    
+    # install app
+    "crispy_bootstrap4",
+    "crispy_forms",
+
     ]
 
 MIDDLEWARE = [
@@ -119,7 +125,14 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
+MEDIA_URL = 'media/'
+
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
