@@ -1,4 +1,4 @@
-{% extends "blog/base.html" %}
+{% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
 <div class="container">
@@ -10,6 +10,7 @@
         <fieldset class="form-group">
             {{ uform | crispy }}
             {{ pform | crispy }}
+            
         </fieldset>
         <div class="form-group">
             <button class="btn btn-outline-primary" type="submit">Change data</button>
