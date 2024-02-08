@@ -61,7 +61,7 @@ class Profile(MainModel):
     )  # Date and time when profile was last updated
 
     def __str__(self):
-        return self.user.username
+        return f'{self.user.username} Profile'
 
 
 # Signal to create profile when user is created
@@ -69,3 +69,9 @@ class Profile(MainModel):
 def save_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
+
+class Follow(models.Model):
+    user = models.ForeignKey(User, related_name = 'user', on_delete=models.CASCADE)
+    follow_user = models.ForeignKey(User, related_name = 'follow_user', on_delete=models.CASCADE)
+    data = models.DateTimeField(auto_now_add=True)
+    

@@ -5,7 +5,12 @@ from django.views import View
 
 
 class HomeView(View):
-    pass
+    template_name = 'twitter/home.html'
+    def get(self, request, *args, **kwargs):
+        return render (request , self.template_name)
+        
 
 class Aboutpage(View):
-    pass
+    template_name = 'twitter/about.html'
+    def get(self, request, *args, **kwargs):
+        return render (request , self.template_name)

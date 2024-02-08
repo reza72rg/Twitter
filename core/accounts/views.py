@@ -46,13 +46,10 @@ class ProfileView(LoginRequiredMixin, View):
     template_name = 'accounts/profile.html'
     second_form_class = ProfileUpdateForm
     
-    def setup(self, request, *args, **kwargs):
-        self.profile_instance = get_object_or_404(Profile,pk=kwargs['pk'])
-        return super().setup(request, *args, **kwargs)
     def get(self, request, *args, **kwargs):
         uform = self.form_class(instance=request.user)
-        pform = self.second_form_class(instance=self.profile_instance)
-        content = {'profile':self.profile_instance,'uform':uform,'pform':pform}
+        pform = self.second_form_class(instance=request.user.profile)
+        content = {'uform':uform,'pform':pform}
         return render (request , self.template_name,content)
     def post(self, request, *args, **kwargs):
         uform = self.form_class(request.POST, instance=request.user) 
@@ -61,7 +58,7 @@ class ProfileView(LoginRequiredMixin, View):
             uform.save()
             pform.save() 
             return redirect('/')
-        content = {'profile':self.profile_instance,'uform':uform,'pform':pform}
+        content = {'uform':uform,'pform':pform}
         return render (request , self.template_name,content)
        
   
