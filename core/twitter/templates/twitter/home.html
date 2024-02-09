@@ -241,7 +241,7 @@
             </div>
         </div>
         <div class="col-12 col-md-3 dont-move">
-            <form action="" method="post">{% csrf_token %}
+            <form action="{% url 'accounts:search' %}" method="post">{% csrf_token %}
                 <div class="search-container">
                     <div class="search">
                     <input required name="search" type="text" id="zip-code-input" placeholder="Search Twitter">

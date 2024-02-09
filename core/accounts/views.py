@@ -6,10 +6,9 @@ from django.views.generic import TemplateView
 from django.contrib.auth import logout
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render,get_object_or_404,redirect
-from accounts.models import Profile
+from django.shortcuts import render,redirect
 from accounts.forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
-
+from accounts.models import User
 # Custom Login View
 class CustomLoginView(LoginView):
     template_name = "accounts/login.html"
@@ -40,7 +39,6 @@ class CustomLogoutView(LoginRequiredMixin, View):
 class LogoutSuccessView(TemplateView):
     template_name = 'accounts/logout.html'
 
-
 class ProfileView(LoginRequiredMixin, View):
     form_class = UserUpdateForm
     template_name = 'accounts/profile.html'
@@ -61,4 +59,13 @@ class ProfileView(LoginRequiredMixin, View):
         content = {'uform':uform,'pform':pform}
         return render (request , self.template_name,content)
        
-  
+class Searchview(View):
+    template_name = 'accounts/search_result.html'
+    def post(self, request, *args, **kwargs):
+        print('10'*10,request)
+        q =  request.POST.get('search')
+        results = User.objects.filter(username__icontains=q)
+        context = {
+            'results':results
+        }
+        return render (request , self.template_name, context)
