@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container">
-    {% if follow == 'follows' %}
+    {% if follow == 'following' %}
          <div class="col-12 no-padding">
             <h3 class="white-important mb-3">
-                Follows
+                Following
             </h3>
             <div class="row pr-3 pl-3">
                 {% for follow in follows %}
@@ -15,7 +15,7 @@
                                            class="rounded-circle mr-2"
                                            style="width: 20px; height: 20px;"
                                            src="{{ follow.follow_user.profile.image.url }}">
-                               <a class="mr-2 white-important" href="{% url 'user-posts' follow.follow_user.username %}">
+                               <a class="mr-2 white-important" href="{% url 'twitter:user-follows' follow.follow_user.id %}">
                                    {{ follow.follow_user.username }}
                                </a>
                             </div>
@@ -40,7 +40,7 @@
                                            class="rounded-circle mr-2"
                                            style="width: 20px; height: 20px;"
                                            src="{{ follow.user.profile.image.url }}">
-                               <a class="mr-2 white-important" href="{% url 'user-posts' follow.user.username %}">
+                               <a class="mr-2 white-important" href="">
                                    {{ follow.user.username }}
                                </a>
                             </div>

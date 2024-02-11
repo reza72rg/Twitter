@@ -36,13 +36,13 @@
                     </div>
                         <div class="col-6">
                             <h3 class="white-important follow-click">
-                                <a href="">
+                                <a href="{% url 'twitter:user-followers' user.id 'followers' %}">
                                     {{ user.profile.followers }}
                                 </a>
                             </h3>
                         </div>
                          <div class="col-6">
-                            <a href="">
+                            <a href="{% url 'twitter:user-followers' user.id 'following' %}">
                                 <h3 class="white-important follow-click">
                                     {{ user.profile.following }}
                                 </h3>
