@@ -8,6 +8,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from twitter.models import Post
 from accounts.models import User, Profile, Follow
 from django.contrib import messages
+from django.urls import reverse_lazy
 # Create your views here.
 
 
@@ -15,28 +16,27 @@ from django.contrib import messages
 class PostListView(LoginRequiredMixin,ListView):
     template_name = 'twitter/home.html'
     model = Post
+    context_object_name = "posts"
+    queryset = Post.objects.all()
     
-'''    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["tasks"] = Status.objects.all()
-        return context
-'''
-    
+''' def get_queryset(self):
+        queryset = super().get_queryset()
+        posts = queryset.filter(author=self.request.user)
+        return posts
+    '''
+
     
 class Aboutpage(View):
     template_name = 'twitter/about.html'
     def get(self, request, *args, **kwargs):
         return render (request , self.template_name)
 
-class UserPostListView(LoginRequiredMixin, View):
+class UserFollowListView(LoginRequiredMixin, View):
     template_name = 'twitter/home_follow.html'
 
     def dispatch(self, request, *args, **kwargs):
         self.user = User.objects.get(pk=kwargs['user_id'])
         self.relation = Follow.objects.filter(user=request.user, follow_user=self.user)
-        if self.user == request.user:
-            messages.error(request, 'You can\'t follow/unfollow your own account', 'danger')
-            return redirect('twitter:home_page')
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -51,7 +51,8 @@ class UserPostListView(LoginRequiredMixin, View):
             can_follow = False
         else:
             can_follow = True
-        content = {'user': self.user, "can_follow": can_follow}
+        posts = Post.objects.filter(author= self.user)
+        content = {'user': self.user, "can_follow": can_follow, 'posts':posts}
         return render(request, self.template_name, content)
 
 
@@ -70,3 +71,15 @@ class FollowersView(LoginRequiredMixin, View):
             follows = Follow.objects.filter(follow_user = self.user)
         content = {'follows': follows, 'follow': self.follow}
         return render(request, self.template_name,content)
+
+
+
+class UserCreatePostView(LoginRequiredMixin, CreateView):
+    model = Post
+    template_name = 'twitter/post_new.html'
+    fields = ["content"]
+    success_url = reverse_lazy("twitter:home_page")
+
+    def form_valid(self, form):
+        form.instance.author_id = self.request.user.id
+        return super(UserCreatePostView, self).form_valid(form)
