@@ -9,7 +9,6 @@
                 Profile
             </h3>
             <article class="media content-section" style="height: 140px; width: 100%">
-              
                     <div class="mt-2 d-flex full-width align-items-center">
                         <img
                            class="rounded-circle mr-3"
@@ -53,14 +52,7 @@
             </article>
 
             <div class="d-flex">
-                {% if user_profile is None %}
-                <div style="margin-left: auto; margin-right:auto">
-                    <a class="btn btn-sm btn-outline-primary mb-4 mr-3 " href="">
-                        Tweet
-                    </a>
-                </div>
-                {% endif %}
-                {%  if user_profile is not None and user_profile.id != user.id  and user.username != '' %}
+                {%  if user is not None  and user.username != '' %}
                     <form method="POST">
                         {% csrf_token %}
                         <div class="form-group">
@@ -214,7 +206,7 @@
             </div>
             <h3 class="white-important mb-3 mt-4"> Trends </h3>
 
-                {%  if user_profile is None %}
+                {%  if user is None %}
 
                 <article class="t-section media content-section">
 

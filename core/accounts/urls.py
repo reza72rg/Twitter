@@ -11,6 +11,6 @@ urlpatterns = [
     # Register view
     path("register/", RegisterPageView.as_view(), name="register"),
     path('profile/', ProfileView.as_view(), name='profile'),
-    path('search/',Searchview.as_view(),name = "search")
+    path('search/',Searchview.as_view(),name = "search"),
 
 ]

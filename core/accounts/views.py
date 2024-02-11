@@ -62,10 +62,12 @@ class ProfileView(LoginRequiredMixin, View):
 class Searchview(View):
     template_name = 'accounts/search_result.html'
     def post(self, request, *args, **kwargs):
-        print('10'*10,request)
         q =  request.POST.get('search')
         results = User.objects.filter(username__icontains=q)
         context = {
             'results':results
         }
         return render (request , self.template_name, context)
+
+
+
