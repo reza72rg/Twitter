@@ -17,7 +17,7 @@ class PostListView(LoginRequiredMixin,ListView):
     template_name = 'twitter/home.html'
     model = Post
     context_object_name = "posts"
-    
+    ordering = ['-created_date']
     def get_queryset(self):
         queryset = super().get_queryset()
         user_follow = Follow.objects.filter(user=self.request.user).values_list('follow_user', flat=True)
@@ -32,7 +32,7 @@ class Aboutpage(View):
 
 class UserFollowListView(LoginRequiredMixin, View):
     template_name = 'twitter/home_follow.html'
-
+    ordering = ['-created_date']
     def dispatch(self, request, *args, **kwargs):
         self.user = User.objects.get(pk=kwargs['user_id'])
         self.relation = Follow.objects.filter(user=request.user, follow_user=self.user)
@@ -50,7 +50,7 @@ class UserFollowListView(LoginRequiredMixin, View):
             can_follow = False
         else:
             can_follow = True
-        posts = Post.objects.filter(author= self.user)
+        posts = Post.objects.filter(author= self.user).order_by('-created_date')
         content = {'user': self.user, "can_follow": can_follow, 'posts':posts}
         return render(request, self.template_name, content)
 
@@ -86,6 +86,7 @@ class UserCreatePostView(LoginRequiredMixin, CreateView):
 
 class DeletePostView(LoginRequiredMixin, DeleteView):
     model = Post
+    template_name = 'twitter/post_delete.html'
     context_object_name = "post"
     success_url = reverse_lazy("twitter:home_page")
 
@@ -96,3 +97,8 @@ class UpdatePostView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy("twitter:home_page")
     def form_valid(self, form):
         return super(UpdatePostView, self).form_valid(form)
+
+
+class DetailsPostView(LoginRequiredMixin, DetailView):
+    model = Post
+    template_name = 'twitter/post_detail.html'

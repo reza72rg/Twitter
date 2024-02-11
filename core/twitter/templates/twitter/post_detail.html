@@ -15,7 +15,7 @@
                        class="rounded-circle mr-2"
                        style="width: 20px; height: 20px;"
                        src="{{ post.author.profile.image.url }}">
-                   <a class="mr-2 white-important" href="{% url 'user-posts' post.author %}">
+                   <a class="mr-2 white-important" href="{% url 'twitter:user-follows' post.author.id %}">
                        {{ post.author }}
                    </a>
                </div>
@@ -24,10 +24,10 @@
                    {% if post.author == user %}
                         <a class="material-icons ml-2"
                            style="font-size: 14px"
-                                href="{% url 'post-delete' post.id %}">clear</a>
+                                href="{% url 'twitter:delete' post.id %}">clear</a>
                         <a class="material-icons ml-2"
                            style="font-size: 14px"
-                                href="{% url 'post-update' post.id %}">update</a>
+                                href="{% url 'twitter:update_post' post.id %}">update</a>
                     {%  endif %}
                </div>
            </div>
@@ -41,7 +41,7 @@
 
                 <small
                     class="white-important d-flex full-width flex-row-reverse">
-                    {{ post.date_posted | date:"H:i l, d.m.y" }}
+                    {{ post.created_date | date:"H:i l, d.m.y" }}
                 </small>
             </a>
         </div>
