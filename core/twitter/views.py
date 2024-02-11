@@ -17,14 +17,13 @@ class PostListView(LoginRequiredMixin,ListView):
     template_name = 'twitter/home.html'
     model = Post
     context_object_name = "posts"
-    queryset = Post.objects.all()
     
-''' def get_queryset(self):
+    def get_queryset(self):
         queryset = super().get_queryset()
-        posts = queryset.filter(author=self.request.user)
+        user_follow = Follow.objects.filter(user=self.request.user).values_list('follow_user', flat=True)
+        follow_user = Follow.objects.filter(follow_user=self.request.user).values_list('user', flat=True)
+        posts = queryset.filter(author__in=user_follow) | queryset.filter(author__in=follow_user) | queryset.filter(author=self.request.user)
         return posts
-    '''
-
     
 class Aboutpage(View):
     template_name = 'twitter/about.html'
@@ -83,3 +82,17 @@ class UserCreatePostView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.author_id = self.request.user.id
         return super(UserCreatePostView, self).form_valid(form)
+
+
+class DeletePostView(LoginRequiredMixin, DeleteView):
+    model = Post
+    context_object_name = "post"
+    success_url = reverse_lazy("twitter:home_page")
+
+
+class UpdatePostView(LoginRequiredMixin, UpdateView):
+    model = Post
+    fields = ["content"]
+    success_url = reverse_lazy("twitter:home_page")
+    def form_valid(self, form):
+        return super(UpdatePostView, self).form_valid(form)

@@ -117,10 +117,10 @@
                            {% if post.author == user %}
                                 <a class="material-icons ml-2"
                                    style="font-size: 14px"
-                                        href="">clear</a>
+                                        href="{% url 'twitter:delete' post.id %}">clear</a>
                                 <a class="material-icons ml-2"
                                    style="font-size: 14px"
-                                        href="">update</a>
+                                        href="{% url 'twitter:update_post' post.id %}">update</a>
                             {%  endif %}
                        </div>
                    </div>
