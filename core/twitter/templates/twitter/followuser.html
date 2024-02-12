@@ -4,10 +4,10 @@
 
 	<div class="container">
 		<div class="form-group">
-				<form action="{% url 'accounts:search' %}" method="post">{% csrf_token %}
+				<form action="{% url 'twitter:follow' %}" method="post">{% csrf_token %}
                 <div style="width: 100%" class="search-container">
                     <div class="search">
-                    <input required name="search" type="text" id="zip-code-input" placeholder="Search Twitter">
+                    <input required name="search" type="text" id="zip-code-input" placeholder="Search User">
                     <button type="submit" style="border:0; background: transparent;"><i class="fa fa-search"></i> </button> </a>
                 </div>
                 </form>

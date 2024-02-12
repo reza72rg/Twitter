@@ -40,7 +40,7 @@
                                            class="rounded-circle mr-2"
                                            style="width: 20px; height: 20px;"
                                            src="{{ follow.user.profile.image.url }}">
-                               <a class="mr-2 white-important" href="">
+                               <a class="mr-2 white-important" href="{% url 'twitter:user-follows' follow.user.id %}">
                                    {{ follow.user.username }}
                                </a>
                             </div>

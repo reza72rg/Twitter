@@ -13,18 +13,49 @@ from django.urls import reverse_lazy
 
 
 
-class PostListView(LoginRequiredMixin,ListView):
+'''class PostListView(LoginRequiredMixin,View):
     template_name = 'twitter/home.html'
-    model = Post
-    context_object_name = "posts"
     ordering = ['-created_date']
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        user_follow = Follow.objects.filter(user=self.request.user).values_list('follow_user', flat=True)
-        follow_user = Follow.objects.filter(follow_user=self.request.user).values_list('user', flat=True)
-        posts = queryset.filter(author__in=user_follow) | queryset.filter(author__in=follow_user) | queryset.filter(author=self.request.user)
-        return posts
+    def dispatch(self, request, *args, **kwargs):
+        self.user_follow = Follow.objects.filter(user=self.request.user).values_list('follow_user', flat=True)
+        self.follow_user = Follow.objects.filter(follow_user=self.request.user).values_list('user', flat=True)
+        self.posts = Post.objects.filter(author__in=self.user_follow) | Post.objects.filter(author__in=self.follow_user) | Post.objects.filter(author=self.request.user)
+        return super().dispatch(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        content = {'posts':self.posts}
+        return render(request, self.template_name, content)
     
+    def post(self, request, *args, **kwargs):
+        q =  request.POST.get('search')
+        posts = self.posts.filter(content__icontains=q)
+        content = {'posts':posts}
+        return render(request, self.template_name, content)'''
+class PostListView(LoginRequiredMixin, ListView):
+    template_name = 'twitter/home.html'
+    ordering = ['-created_date']
+    context_object_name = 'posts'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.user_follow = Follow.objects.filter(user=self.request.user).values_list('follow_user', flat=True)
+        self.follow_user = Follow.objects.filter(follow_user=self.request.user).values_list('user', flat=True)
+        self.posts = Post.objects.filter(author__in=self.user_follow) | Post.objects.filter(author__in=self.follow_user) | Post.objects.filter(author=self.request.user)
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return self.posts
+
+    def post(self, request, *args, **kwargs):
+        q = request.POST.get('search')
+        posts = self.posts.filter(content__icontains=q)
+        context = {'posts': posts}
+        return render(request, self.template_name, context)
+    
+    
+    
+    
+    
+        
+
 class Aboutpage(View):
     template_name = 'twitter/about.html'
     def get(self, request, *args, **kwargs):
@@ -46,14 +77,16 @@ class UserFollowListView(LoginRequiredMixin, View):
         return redirect('twitter:user-follows', self.user.id)
 
     def get(self, request, *args, **kwargs):
+        can_follow = True
+        posts = None
         if self.relation.exists():
             can_follow = False
-        else:
-            can_follow = True
-        posts = Post.objects.filter(author= self.user).order_by('-created_date')
+            posts = Post.objects.filter(author= self.user).order_by('-created_date')
         content = {'user': self.user, "can_follow": can_follow, 'posts':posts}
         return render(request, self.template_name, content)
 
+
+   
 
 class FollowersView(LoginRequiredMixin, View):
     template_name = 'twitter/follow.html'
@@ -102,3 +135,33 @@ class UpdatePostView(LoginRequiredMixin, UpdateView):
 class DetailsPostView(LoginRequiredMixin, DetailView):
     model = Post
     template_name = 'twitter/post_detail.html'
+    
+    
+'''    
+class Searchview(View):
+    template_name = 'twitter/home.html'
+    def post(self, request, *args, **kwargs):
+        q =  request.POST.get('search')
+        user_follow = Follow.objects.filter(user=self.request.user).values_list('follow_user', flat=True)
+        follow_user = Follow.objects.filter(follow_user=self.request.user).values_list('user', flat=True)
+        posts = Post.objects.filter(author__in=user_follow) | Post.objects.filter(author__in=follow_user) | Post.objects.filter(author=self.request.user)
+        posts = posts.filter(content__icontains=q)
+        context = {
+            'posts':posts
+        }
+        return render (request , self.template_name, context)'''
+
+
+
+       
+class FollowUserView(View):
+    template_name = 'twitter/followuser.html'
+    def post(self, request, *args, **kwargs):
+        q =  request.POST.get('search')
+        print('200'*10,q)
+        results = User.objects.filter(username__icontains=q)
+        context = {
+            'results':results
+        }
+        return render (request , self.template_name, context)
+

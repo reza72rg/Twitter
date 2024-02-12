@@ -197,7 +197,7 @@
             </div>
         </div>
         <div class="col-12 col-md-3 dont-move">
-            <form action="{% url 'accounts:search' %}" method="post">{% csrf_token %}
+            <form action="{% url 'twitter:search' %}" method="post">{% csrf_token %}
                 <div class="search-container">
                     <div class="search">
                     <input required name="search" type="text" id="zip-code-input" placeholder="Search Twitter">
@@ -207,40 +207,17 @@
             </div>
             <h3 class="white-important mb-3 mt-4"> Trends </h3>
 
-                {%  if user is None %}
-
+            <form action="{% url 'twitter:follow' %}" method="post">{% csrf_token %}
                 <article class="t-section media content-section">
-
                     <div class="row ">
                         <div class="col-12">
                             <h3>Who to follow</h3>
+                            <input required name="search" type="text" id="zip-code-input" placeholder="Search User">
+                    <button type="submit" style="border:0; background: transparent;"><i class="fa fa-search"></i> </button> </a>
+                    </form>
                         </div>
-                        <ul class="col-12 mt-2">
-                            {% for user in all_users %}
-                                <li>
-                                    <div class="who-to-follow">
-
-                                        <div
-                                               style="padding-left: 0px !important;"
-                                               class="col-8 no-padding d-flex align-items-center">
-                                           <img
-                                               class="rounded-circle mr-2"
-                                               style="width: 20px; height: 20px;"
-                                               src="{{ user.profile.image.url }}">
-                                           <a class="mr-2 white-important" href="{% url 'user-posts' user.username %}">
-                                               {{ user.username }}
-                                           </a>
-                                       </div>
-                                        <p>{{ user.email }}</p>
-                                    </div>
-                                </li>
-                            {% endfor %}
-                        </ul>
-
                     </div>
-
                 </article>
-                {% endif %}
                 <p><a href="">Terms</a>,
 <a href="">Privacy policy</a>,
 <a href="">Cookies</a>,

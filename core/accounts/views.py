@@ -8,7 +8,7 @@ from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render,redirect
 from accounts.forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
-from accounts.models import User
+
 # Custom Login View
 class CustomLoginView(LoginView):
     template_name = "accounts/login.html"
@@ -59,15 +59,3 @@ class ProfileView(LoginRequiredMixin, View):
         content = {'uform':uform,'pform':pform}
         return render (request , self.template_name,content)
        
-class Searchview(View):
-    template_name = 'accounts/search_result.html'
-    def post(self, request, *args, **kwargs):
-        q =  request.POST.get('search')
-        results = User.objects.filter(username__icontains=q)
-        context = {
-            'results':results
-        }
-        return render (request , self.template_name, context)
-
-
-
