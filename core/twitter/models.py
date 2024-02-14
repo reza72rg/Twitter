@@ -7,7 +7,14 @@ class Post(models.Model):
     content = models.TextField()
     author = models.ForeignKey(User, on_delete = models.CASCADE )
     created_date = models.DateTimeField(auto_now_add=True)
-    updated_date = models.DateTimeField(auto_now=True) 
+    updated_date = models.DateTimeField(auto_now=True)
+    @property
+    def likes(self):
+        return Like.objects.filter(post=self).count() 
+    
+    @property
+    def dislikes(self):
+        return DisLike.objects.filter(post=self).count() 
     def __str__(self):
         return self.content[:15]
 

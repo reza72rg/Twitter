@@ -17,12 +17,16 @@ class PostListView(LoginRequiredMixin, ListView):
     ordering = ['-created_date']
     context_object_name = 'posts'
     paginate_by = 3
+    
     def dispatch(self, request, *args, **kwargs):
-        self.user_follow = Follow.objects.filter(user=self.request.user).values_list('follow_user', flat=True)
-        self.follow_user = Follow.objects.filter(follow_user=self.request.user).values_list('user', flat=True)
-        self.posts = Post.objects.filter(author__in=self.user_follow) | Post.objects.filter(author__in=self.follow_user) | Post.objects.filter(author=self.request.user)
+        if request.user.is_authenticated:
+            self.user_follow = Follow.objects.filter(user=request.user).values_list('follow_user', flat=True)
+            self.posts = Post.objects.filter(author__in=self.user_follow) | Post.objects.filter(author=request.user)
+        else:
+            self.posts = Post.objects.none()  # Empty queryset if user is not authenticated
+        
         return super().dispatch(request, *args, **kwargs)
-
+    
     def get_queryset(self):
         return self.posts
 
@@ -32,13 +36,12 @@ class PostListView(LoginRequiredMixin, ListView):
         context = {'posts': posts}
         return render(request, self.template_name, context)
     
-    
-    
+
     
     
         
 
-class Aboutpage(View):
+class Aboutpage(LoginRequiredMixin,View):
     template_name = 'twitter/about.html'
     def get(self, request, *args, **kwargs):
         return render (request , self.template_name)
@@ -154,11 +157,10 @@ class LikePostView(LoginRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
         self.pk =kwargs['pk']
         self.like = Like.objects.filter(user = request.user, post_id = self.pk)
-        self.can_like = True
         return super().dispatch(request, *args, **kwargs)
     def get(self, request, *args, **kwargs):
         if self.like.exists():
-            can_like = False
+            self.like.delete()
         else:
             Like(user= request.user , post_id= self.pk).save()
         return redirect('/')
@@ -167,11 +169,10 @@ class DisLikePostView(LoginRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
         self.pk =kwargs['pk']
         self.dislike = DisLike.objects.filter(user = request.user, post_id = self.pk)
-        self.can_dislike = True
         return super().dispatch(request, *args, **kwargs)
     def get(self, request, *args, **kwargs):
         if self.dislike.exists():
-            can_dislike = False
+            self.dislike.delete()
         else:
             DisLike(user= request.user , post_id= self.pk).save()
         return redirect('/')
