@@ -1,6 +1,7 @@
 from django.urls import path, include
 from twitter.views import UserCreatePostView, PostListView, Aboutpage, FollowersView\
-    , UserFollowListView, DeletePostView, UpdatePostView, DetailsPostView, FollowUserView
+    , UserFollowListView, DeletePostView, UpdatePostView, DetailsPostView, FollowUserView\
+        , LikePostView, DisLikePostView
 
 # Set the app name for namespacing
 app_name = "twitter"
@@ -20,6 +21,8 @@ urlpatterns = [
     path("details/<int:pk>/", DetailsPostView.as_view(), name="details_post"),
     path('search/',PostListView.as_view(),name = "search"),
     path('follow/',FollowUserView.as_view(),name = "follow"),
+    path('like/<int:pk>/',LikePostView.as_view(),name = "like-post"),
+    path('dislike/<int:pk>/',DisLikePostView.as_view(),name = "dislike-post"),
 
 
 ]

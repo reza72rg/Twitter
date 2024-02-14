@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from twitter.models import Post
+from twitter.models import Post, Like, DisLike
 from accounts.models import User, Profile, Follow
 from django.contrib import messages
 from django.urls import reverse_lazy
@@ -150,6 +150,28 @@ class FollowUserView(View):
         return render (request , self.template_name, context)
 
 
-
-
-
+class LikePostView(LoginRequiredMixin, View):
+    def dispatch(self, request, *args, **kwargs):
+        self.pk =kwargs['pk']
+        self.like = Like.objects.filter(user = request.user, post_id = self.pk)
+        self.can_like = True
+        return super().dispatch(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        if self.like.exists():
+            can_like = False
+        else:
+            Like(user= request.user , post_id= self.pk).save()
+        return redirect('/')
+    
+class DisLikePostView(LoginRequiredMixin, View):
+    def dispatch(self, request, *args, **kwargs):
+        self.pk =kwargs['pk']
+        self.dislike = DisLike.objects.filter(user = request.user, post_id = self.pk)
+        self.can_dislike = True
+        return super().dispatch(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        if self.dislike.exists():
+            can_dislike = False
+        else:
+            DisLike(user= request.user , post_id= self.pk).save()
+        return redirect('/')
