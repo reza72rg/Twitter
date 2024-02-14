@@ -62,7 +62,7 @@
                            class="rounded-circle mr-2"
                            style="width: 20px; height: 20px;"
                            src="{{ comment.author.profile.image.url }}">
-                       <a class="mr-2 white-important" href="{% url 'user-posts' comment.author.username %}">
+                       <a class="mr-2 white-important" href="">
                            {{ comment.author }}
                        </a>
                    </div>
@@ -77,29 +77,27 @@
 
                     <small
                         class="white-important d-flex full-width flex-row-reverse">
-                        {{ comment.date_posted | date:"H:i l, d.m.y" }}
+                        {{ comment.created_date | date:"H:i l, d.m.y" }}
                     </small>
                 </a>
             </div>
             </article>
         {% endfor %}
         </div>
-        {% if user is not None %}
             <div class="col-12 col-md-6 pl-0 pl-md-3 pr-3">
                 <h3 class="white-important mb-3">
                     Add a comment
                 </h3>
-                <form method="POST">
+                <form method="POST" class="col-12 col-md-6 no-padding pr-3 pr-md-0">
                     {% csrf_token %}
                     <fieldset class="form-group">
                         {{ form | crispy }}
                     </fieldset>
                     <div class="form-group">
-                        <button class="btn btn-outline-primary" type="submit">Submit comment</button>
+                        <button class="btn btn-outline-primary" type="submit">Submit changes</button>
                     </div>
                 </form>
             </div>
-        {% endif %}
     </div>
   </div>
 {% endblock content %}

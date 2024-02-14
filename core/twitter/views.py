@@ -5,8 +5,9 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from twitter.models import Post, Like, DisLike
+from twitter.models import Post, Like, DisLike, Comment
 from accounts.models import User, Profile, Follow
+from twitter.forms import CommentForm
 from django.contrib import messages
 from django.urls import reverse_lazy
 # Create your views here.
@@ -134,13 +135,45 @@ class UpdatePostView(LoginRequiredMixin, UpdateView):
         return super(UpdatePostView, self).form_valid(form)
 
 
-class DetailsPostView(LoginRequiredMixin, DetailView):
+'''class DetailsPostView(LoginRequiredMixin, DetailView):
     model = Post
     template_name = 'twitter/post_detail.html'
+    form_class = CommentForm()
+    def dispatch(self, request, *args, **kwargs):
+        self.pk =kwargs['pk']
+        return super().dispatch(request, *args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['comments'] = Comment.objects.filter(post_id = self.pk,approach = True)
+        return context
     
-    
+    def form_valid(self, form):
+        form.instance.author_id = self.request.user.id
+        return super(DetailsPostView, self).form_valid(form)
 
-
+'''
+class DetailsPostView(LoginRequiredMixin, View):
+    template_name = 'twitter/post_detail.html'
+    form_class = CommentForm
+    def dispatch(self, request, *args, **kwargs):
+        self.pk =kwargs['pk']
+        self.posts = Post.objects.get(pk = self.pk)
+        self.comment = Comment.objects.filter(post_id = self.pk,approach = True)
+        return super().dispatch(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        context = {
+            'comments':self.comment, 'post':self.posts,"form":form
+        }
+        return render (request , self.template_name, context)
+    def post (self, request, *args, **kwargs):
+        form = self.form_class(request.POST) 
+        if form.is_valid():
+            endcomment = form.save(commit=False)
+            endcomment.post = self.posts
+            endcomment.author = request.user
+            endcomment.save()
+        return redirect('twitter:details_post', self.posts.pk)
        
 class FollowUserView(View):
     template_name = 'twitter/followuser.html'
