@@ -22,9 +22,9 @@
                                            <img
                                                class="rounded-circle mr-2"
                                                style="width: 40px; height: 40px;"
-                                               src="{{ result.profile.image.url }}">
-                                           <a class="mr-2 white-important" href="{% url 'twitter:user-follows' result.id %}">
-                                               {{ result.username }}
+                                               src="{{ result.image.url }}">
+                                           <a class="mr-2 white-important" href="{% url 'twitter:user-follows' result.user_id %}">
+                                               {{ result.user }}
                                            </a>
                                        </div>
 				                    

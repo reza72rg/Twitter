@@ -53,6 +53,7 @@ class Profile(MainModel):
     descriptions = (
         models.TextField(blank=True, null=True)
     )  # Text field for user profile description
+    active = models.BooleanField(default= True)
     create_date = models.DateTimeField(
         auto_now_add=True
     )  # Date and time when profile was created
@@ -70,7 +71,6 @@ class Profile(MainModel):
     @property
     def following(self):
         return Follow.objects.filter(user=self.user).count()
-
 # Signal to create profile when user is created
 @receiver(post_save, sender=User)
 def save_profile(sender, instance, created, **kwargs):

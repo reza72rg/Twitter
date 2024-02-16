@@ -95,7 +95,7 @@ class FollowersView(LoginRequiredMixin, View):
     template_name = 'twitter/follow.html'
     def dispatch(self, request, *args, **kwargs):
         self.follow =kwargs['letter']
-        self.user = User.objects.get(pk=kwargs['user_id'])
+        self.user = Profile.objects.get(user_id=kwargs['user_id'])
         return super().dispatch(request, *args, **kwargs)
     
     
@@ -179,7 +179,8 @@ class FollowUserView(View):
     template_name = 'twitter/followuser.html'
     def post(self, request, *args, **kwargs):
         q =  request.POST.get('search')
-        results = User.objects.filter(username__icontains=q)
+        results = Profile.objects.filter(user__username__icontains=q,active = True)
+        print(results)
         context = {
             'results':results
         }
