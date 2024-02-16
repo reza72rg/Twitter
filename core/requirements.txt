@@ -7,3 +7,4 @@ django-crispy-forms==2.1
 pillow==10.2.0
 sqlparse==0.4.4
 tzdata==2023.4
+django-cleanup==8.0.0

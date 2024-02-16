@@ -77,6 +77,8 @@ class Profile(MainModel):
 def save_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
+        
+
 
 class Follow(models.Model):
     user = models.ForeignKey(Profile, related_name='user_follow', on_delete=models.CASCADE)

@@ -22,7 +22,7 @@ class PostListView(LoginRequiredMixin, ListView):
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             self.user_follow = Follow.objects.filter(user=request.user.profile).values_list('follow_user', flat=True)
-            self.posts = Post.objects.filter(author__in=self.user_follow) | Post.objects.filter(author=request.user.profile)
+            self.posts = Post.objects.filter(author__in=self.user_follow,archive=True) | Post.objects.filter(author=request.user.profile,archive=True)
         else:
             self.posts = Post.objects.none()  # Empty queryset if user is not authenticated
         
@@ -64,7 +64,7 @@ class UserFollowListView(LoginRequiredMixin, ListView):
         self.can_follow = True
         if self.relation.exists() or self.user == self.request.user.profile:
             self.can_follow = False
-            self.posts = Post.objects.filter(author= self.user).order_by('-created_date')
+            self.posts = Post.objects.filter(author= self.user,archive=True).order_by('-created_date')
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -156,7 +156,7 @@ class DetailsPostView(LoginRequiredMixin, View):
     form_class = CommentForm
     def dispatch(self, request, *args, **kwargs):
         self.pk =kwargs['pk']
-        self.posts = Post.objects.get(pk = self.pk)
+        self.posts = Post.objects.get(pk = self.pk,archive=True)
         self.comment = Comment.objects.filter(post_id = self.pk,approach = True)
         return super().dispatch(request, *args, **kwargs)
     def get(self, request, *args, **kwargs):

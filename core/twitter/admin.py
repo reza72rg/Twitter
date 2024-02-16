@@ -4,8 +4,19 @@ from twitter.models import Post, Like, DisLike, Comment
 
 
 
-admin.site.register(Post)
+@admin.register(Post)
+class PostAdmin(admin.ModelAdmin):
+    def get_fields(self, request, obj=None):
+        return ["content", "author","archive"]
 
+    def get_list_display(self, request):
+        return ["content", "author","archive"]
+
+    def get_search_fields(self, request):
+        return ["author","archive" ]
+
+    def get_list_filter(self, request, filters=None):
+        return ["author","archive" ]
 
 
 

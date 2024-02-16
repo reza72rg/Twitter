@@ -8,6 +8,7 @@ class Post(models.Model):
     author = models.ForeignKey(Profile, on_delete = models.CASCADE )
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
+    archive = models.BooleanField(default = True)
     @property
     def number_of_comments(self):
         return Comment.objects.filter(post=self,approach = True).count() 
