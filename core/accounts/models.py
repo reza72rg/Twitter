@@ -6,6 +6,7 @@ from core.tools import UploadToPathAndRename
 from django.db.models.fields.files import ImageFieldFile
 from django.core.files import File
 from django.utils.translation import gettext as _
+from django.contrib.auth.models import AbstractUser
 from PIL import Image
 from io import BytesIO
 def get_image_field(self):
@@ -40,7 +41,6 @@ class MainModel(models.Model):
         abstract = True
 
 
-
 # Profile Model
 class Profile(MainModel):
     user = models.OneToOneField(
@@ -62,15 +62,16 @@ class Profile(MainModel):
     )  # Date and time when profile was last updated
 
     def __str__(self):
-        return f'{self.user.username} Profile'
+        return self.user.username
 
     @property
     def followers(self):
-        return Follow.objects.filter(follow_user=self.user).count()
+        return Follow.objects.filter(follow_user__id=self.user.id).count()
 
     @property
     def following(self):
-        return Follow.objects.filter(user=self.user).count()
+        return Follow.objects.filter(user__id=self.user.id).count()
+    
 # Signal to create profile when user is created
 @receiver(post_save, sender=User)
 def save_profile(sender, instance, created, **kwargs):
@@ -78,8 +79,8 @@ def save_profile(sender, instance, created, **kwargs):
         Profile.objects.create(user=instance)
 
 class Follow(models.Model):
-    user = models.ForeignKey(User, related_name='user', on_delete=models.CASCADE)
-    follow_user = models.ForeignKey(User, related_name='follow_user', on_delete=models.CASCADE)
+    user = models.ForeignKey(Profile, related_name='user_follow', on_delete=models.CASCADE)
+    follow_user = models.ForeignKey(Profile, related_name='follow_user', on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):

@@ -14,9 +14,9 @@
                                 <img
                                            class="rounded-circle mr-2"
                                            style="width: 20px; height: 20px;"
-                                           src="{{ follow.follow_user.profile.image.url }}">
+                                           src="{{ follow.follow_user.image.url }}">
                                <a class="mr-2 white-important" href="{% url 'twitter:user-follows' follow.follow_user.id %}">
-                                   {{ follow.follow_user.username }}
+                                   {{ follow.follow_user.user }}
                                </a>
                             </div>
                         </article>
@@ -39,9 +39,9 @@
                                 <img
                                            class="rounded-circle mr-2"
                                            style="width: 20px; height: 20px;"
-                                           src="{{ follow.user.profile.image.url }}">
+                                           src="{{ follow.user.image.url }}">
                                <a class="mr-2 white-important" href="{% url 'twitter:user-follows' follow.user.id %}">
-                                   {{ follow.user.username }}
+                                   {{ follow.user.user }}
                                </a>
                             </div>
                         </article>

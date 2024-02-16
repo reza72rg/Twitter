@@ -14,7 +14,7 @@
                    <img
                        class="rounded-circle mr-2"
                        style="width: 20px; height: 20px;"
-                       src="{{ post.author.profile.image.url }}">
+                       src="{{ post.author.image.url }}">
                    <a class="mr-2 white-important" href="{% url 'twitter:user-follows' post.author.id %}">
                        {{ post.author }}
                    </a>
@@ -61,7 +61,7 @@
                        <img
                            class="rounded-circle mr-2"
                            style="width: 20px; height: 20px;"
-                           src="{{ comment.author.profile.image.url }}">
+                           src="{{ comment.author.image.url }}">
                        <a class="mr-2 white-important" href="">
                            {{ comment.author }}
                        </a>

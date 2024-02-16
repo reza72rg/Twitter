@@ -39,6 +39,7 @@
                             <h3 class="white-important follow-click">
                                 <a href="{% url 'twitter:user-followers' user.id 'followers' %}">
                                     {{ user.profile.followers }}
+                          
                                 </a>
                             </h3>
                         </div>
@@ -107,14 +108,14 @@
                            <img
                                class="rounded-circle mr-2"
                                style="width: 20px; height: 20px;"
-                               src="{{ post.author.profile.image.url }}">
+                               src="{{ post.author.image.url }}">
                            <a class="mr-2 white-important" href="{% url 'twitter:user-follows' post.author.id %}">
-                               {{ post.author }}
+                               {{ post.author.user }}
                            </a>
                        </div>
                        <div class="col-4 d-flex flex-row-reverse no-padding align-items-center"
                             style="padding-right: 0 !important;">
-                           {% if post.author == user %}
+                           {% if post.author.user == user %}
                                 <a class="material-icons ml-2"
                                    style="font-size: 14px"
                                         href="{% url 'twitter:delete' post.id %}">clear</a>

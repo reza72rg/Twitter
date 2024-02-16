@@ -21,8 +21,8 @@ class PostListView(LoginRequiredMixin, ListView):
     
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            self.user_follow = Follow.objects.filter(user=request.user).values_list('follow_user', flat=True)
-            self.posts = Post.objects.filter(author__in=self.user_follow) | Post.objects.filter(author=request.user)
+            self.user_follow = Follow.objects.filter(user=request.user.profile).values_list('follow_user', flat=True)
+            self.posts = Post.objects.filter(author__in=self.user_follow) | Post.objects.filter(author=request.user.profile)
         else:
             self.posts = Post.objects.none()  # Empty queryset if user is not authenticated
         
@@ -38,7 +38,6 @@ class PostListView(LoginRequiredMixin, ListView):
         return render(request, self.template_name, context)
     
 
-    
     
         
 
@@ -59,11 +58,11 @@ class UserFollowListView(LoginRequiredMixin, ListView):
     paginate_by = 3
     
     def dispatch(self, request, *args, **kwargs):
-        self.user = User.objects.get(pk=kwargs['user_id'])
-        self.relation = Follow.objects.filter(user=request.user, follow_user=self.user)
+        self.user = Profile.objects.get(user_id=kwargs['user_id'])
+        self.relation = Follow.objects.filter(user=request.user.profile, follow_user=self.user)
         self.posts = []
         self.can_follow = True
-        if self.relation.exists() or self.user == self.request.user:
+        if self.relation.exists() or self.user == self.request.user.profile:
             self.can_follow = False
             self.posts = Post.objects.filter(author= self.user).order_by('-created_date')
         return super().dispatch(request, *args, **kwargs)
@@ -72,7 +71,7 @@ class UserFollowListView(LoginRequiredMixin, ListView):
         if self.relation.exists():
             self.relation.delete()
         else:
-            Follow(user=request.user, follow_user=self.user).save()
+            Follow(user=request.user.profile, follow_user=self.user).save()
         return redirect('twitter:user-follows', self.user.id)
     def get_queryset(self):
         return self.posts
@@ -95,7 +94,7 @@ class FollowersView(LoginRequiredMixin, View):
     template_name = 'twitter/follow.html'
     def dispatch(self, request, *args, **kwargs):
         self.follow =kwargs['letter']
-        self.user = User.objects.get(pk=kwargs['user_id'])
+        self.user = Profile.objects.get(user_id=kwargs['user_id'])
         return super().dispatch(request, *args, **kwargs)
     
     
@@ -171,7 +170,7 @@ class DetailsPostView(LoginRequiredMixin, View):
         if form.is_valid():
             endcomment = form.save(commit=False)
             endcomment.post = self.posts
-            endcomment.author = request.user
+            endcomment.author = request.user.profile
             endcomment.save()
         return redirect('twitter:details_post', self.posts.pk)
        
@@ -190,23 +189,23 @@ class FollowUserView(View):
 class LikePostView(LoginRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
         self.pk =kwargs['pk']
-        self.like = Like.objects.filter(user = request.user, post_id = self.pk)
+        self.like = Like.objects.filter(user = request.user.profile, post_id = self.pk)
         return super().dispatch(request, *args, **kwargs)
     def get(self, request, *args, **kwargs):
         if self.like.exists():
             self.like.delete()
         else:
-            Like(user= request.user , post_id= self.pk).save()
+            Like(user= request.user.profile , post_id= self.pk).save()
         return redirect('/')
     
 class DisLikePostView(LoginRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
         self.pk =kwargs['pk']
-        self.dislike = DisLike.objects.filter(user = request.user, post_id = self.pk)
+        self.dislike = DisLike.objects.filter(user = request.user.profile, post_id = self.pk)
         return super().dispatch(request, *args, **kwargs)
     def get(self, request, *args, **kwargs):
         if self.dislike.exists():
             self.dislike.delete()
         else:
-            DisLike(user= request.user , post_id= self.pk).save()
+            DisLike(user= request.user.profile , post_id= self.pk).save()
         return redirect('/')
