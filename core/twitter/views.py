@@ -95,7 +95,7 @@ class FollowersView(LoginRequiredMixin, View):
     template_name = 'twitter/follow.html'
     def dispatch(self, request, *args, **kwargs):
         self.follow =kwargs['letter']
-        self.user = Profile.objects.get(user_id=kwargs['user_id'])
+        self.user = User.objects.get(pk=kwargs['user_id'])
         return super().dispatch(request, *args, **kwargs)
     
     
