@@ -5,21 +5,36 @@
     <h3 class="white-important">
         Change profile data
     </h3>
-    <form class="col-6 no-padding" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <fieldset class="form-group">
-            {{ uform | crispy }}
-            <div class="mt-2 d-flex full-width align-items-center">
-                <img
+       <img
                    class="rounded-circle mr-3"
                    style="width: 90px; height: 90px;"
                    src="{{ user.profile.image.url }}">
                 <div>
-                {{ pform | crispy }}
-        </fieldset>
-        <div class="form-group">
-            <button class="btn btn-outline-primary" type="submit">Change data</button>
-        </div>
-    </form>
-</div>
+                    <fieldset class="form-group">
+                        <div class="mt-2 d-flex full-width align-items-center">
+                           
+                            <form action="{% url 'accounts:profile-edit' request.user.id %}" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                            
+                                <label for="username">Username:</label>
+                                <input type="text" class="form-control" value="{{ username }}" name="user"><br><br>
+                            
+                                <label for="email">Email:</label>
+                                <input type="email" class="form-control" name="email" value="{{ profile.email }}" ><br><br>
+                        
+                                <label for="new_image">Change Image:</label>
+                                <input type="file" name="image" accept="image/*"><br><br>
+
+                                <label for="descriptions">Descriptions:</label>
+                                <textarea class="form-control" name="descriptions" rows="3">{{ profile.descriptions }}</textarea><br><br>
+                            
+                                <label for="active">Active:</label>
+                                <input type="checkbox" {% if profile.active %}checked{% endif %} name="active"><br><br>
+                            
+                                <button class="btn btn-outline-primary" type="submit">Change Data</button>
+                            </form>
+
+
+
+
 {% endblock content %}

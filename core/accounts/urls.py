@@ -1,5 +1,5 @@
 from django.urls import path, include
-from accounts.views import CustomLoginView, RegisterPageView, CustomLogoutView, LogoutSuccessView, ProfileView
+from accounts.views import CustomLoginView, RegisterPageView, CustomLogoutView, LogoutSuccessView, ProfileEditView
 # Set the app name for namespacing
 app_name = "accounts"
 
@@ -10,7 +10,7 @@ urlpatterns = [
     path('logout/success/', LogoutSuccessView.as_view(), name='logout_success'),
     # Register view
     path("register/", RegisterPageView.as_view(), name="register"),
-    path('profile/', ProfileView.as_view(), name='profile'),
+    path('profile-edit/<int:pk>/', ProfileEditView.as_view(), name='profile-edit'),
  
 
 ]

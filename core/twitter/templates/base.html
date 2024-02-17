@@ -27,8 +27,11 @@
             </div>
                         <div class="navbar-nav pr-2">
                 {% if request.user.is_authenticated %}
+                {% if request.user.profile.active %}
                     <a class="nav-item nav-link" href="{% url 'twitter:create-posts' %}">Create a Tweet</a>
-                    <a class="nav-item nav-link" href="{% url 'accounts:profile' %}">Settings</a>
+                    {% endif %}
+                    <a class="nav-item nav-link" href="{% url 'accounts:profile-edit' request.user.id %}">Settings</a>
+                    
                     <a class="nav-item nav-link" href="{% url 'accounts:logout' %}">Logout</a>
                 {% else %}
                     <a class="nav-item nav-link" href="{% url 'accounts:login' %}">Login</a>

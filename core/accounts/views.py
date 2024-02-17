@@ -3,12 +3,13 @@ from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
+from django.views.generic.edit import UpdateView
 from django.contrib.auth import logout
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render,redirect
-from accounts.forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
-
+from accounts.forms import UserRegisterForm, ProfileUpdateForm
+from accounts.models import Profile, User
 # Custom Login View
 class CustomLoginView(LoginView):
     template_name = "accounts/login.html"
@@ -39,7 +40,7 @@ class CustomLogoutView(LoginRequiredMixin, View):
 class LogoutSuccessView(TemplateView):
     template_name = 'accounts/logout.html'
 
-class ProfileView(LoginRequiredMixin, View):
+'''class ProfileView(LoginRequiredMixin, View):
     form_class = UserUpdateForm
     template_name = 'accounts/profile.html'
     second_form_class = ProfileUpdateForm
@@ -58,4 +59,25 @@ class ProfileView(LoginRequiredMixin, View):
             return redirect('/')
         content = {'uform':uform,'pform':pform}
         return render (request , self.template_name,content)
-       
+       '''
+
+from django.shortcuts import get_object_or_404
+
+class ProfileEditView(LoginRequiredMixin, UpdateView):
+    template_name = 'accounts/profile.html'
+    model = Profile
+    fields = ['email','image','descriptions','active']
+    success_url = reverse_lazy("twitter:home_page")
+
+    def form_valid(self, form):
+        value = self.request.POST['user']
+        username = get_object_or_404(User, username=self.request.user)
+        username.username = value
+        username.save()
+        return super(ProfileEditView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context= super().get_context_data(**kwargs)
+        context ['username'] = User.objects.get(username = self.request.user.profile)
+        return context
+   

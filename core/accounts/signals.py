@@ -7,6 +7,7 @@ from twitter.models import Post
 @receiver(post_save, sender=Profile)
 def update_profile(sender, instance, created, **kwargs):
     if not instance.active:
-        post = Post.objects.get(author=instance)
-        post.archive = False
-        post.save()
+        posts = Post.objects.filter(author= instance.user.profile)
+        for post in posts:
+            post.archive = False
+            post.save()
