@@ -6,10 +6,10 @@ from accounts.models import  Profile, Follow
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
     def get_fields(self, request, obj=None):
-        return ["user","email", "first_name","last_name","image","descriptions","active"]
+        return ["user", "first_name","last_name","image","descriptions","active"]
 
     def get_list_display(self, request):
-        return ["user","email","active" ]
+        return ["user","active" ]
 
     def get_search_fields(self, request):
         return ["user","active" ]

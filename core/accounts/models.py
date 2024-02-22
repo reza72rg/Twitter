@@ -46,7 +46,6 @@ class Profile(MainModel):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE
     )  # Foreign key relation with User model
-    email = models.EmailField()
     first_name = models.CharField(max_length=250, blank=True, null=True)  # First name of the user
     last_name = models.CharField(max_length=250, blank=True, null=True)  # Last name of the user
     image = models.ImageField(upload_to=UploadToPathAndRename("profile"),default='profile/default.jpg'

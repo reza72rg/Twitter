@@ -58,13 +58,16 @@ class UserFollowListView(LoginRequiredMixin, ListView):
     paginate_by = 3
     
     def dispatch(self, request, *args, **kwargs):
-        self.user = Profile.objects.get(user_id=kwargs['user_id'])
-        self.relation = Follow.objects.filter(user=request.user.profile, follow_user=self.user)
-        self.posts = []
-        self.can_follow = True
-        if self.relation.exists() or self.user == self.request.user.profile:
-            self.can_follow = False
-            self.posts = Post.objects.filter(author= self.user,archive=True).order_by('-created_date')
+        if request.user.profile.active:
+            self.user = Profile.objects.get(user_id=kwargs['user_id'])
+            self.relation = Follow.objects.filter(user=request.user.profile, follow_user=self.user)
+            self.posts = []
+            self.can_follow = True
+            if self.relation.exists() or self.user == self.request.user.profile:
+                self.can_follow = False
+                self.posts = Post.objects.filter(author= self.user,archive=True).order_by('-created_date')
+        else:
+            return redirect('/')
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):

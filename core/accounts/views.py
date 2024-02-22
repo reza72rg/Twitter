@@ -66,13 +66,15 @@ from django.shortcuts import get_object_or_404
 class ProfileEditView(LoginRequiredMixin, UpdateView):
     template_name = 'accounts/profile.html'
     model = Profile
-    fields = ['email','image','descriptions','active']
+    fields = ['image','descriptions','active']
     success_url = reverse_lazy("twitter:home_page")
 
     def form_valid(self, form):
         value = self.request.POST['user']
+        user_email = self.request.POST['email']
         username = get_object_or_404(User, username=self.request.user)
         username.username = value
+        username.email = user_email
         username.save()
         return super(ProfileEditView, self).form_valid(form)
 

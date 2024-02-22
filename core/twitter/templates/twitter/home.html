@@ -22,7 +22,7 @@
                             </h4>
                             <h6 style="text-align: left"
                                     class="email-profile">
-                                {{ user.profile.email }}
+                                {{ user.email }}
                             </h6>
                         </div>
                     </div>
@@ -102,7 +102,7 @@
                     </h6>
                 </div>
             </div>
-
+            {% if request.user.profile.active %}
             {% for post in posts %}
                 <article class="media content-section hovered-tweet">
                 <div style="width: 100%; word-break: break-all;">
@@ -181,6 +181,7 @@
                 </div>
                 </article>
             {% endfor %}
+            {% endif %}
 
             <div class="full-width d-flex justify-content-center">
                 {% if is_paginated %}
@@ -210,7 +211,9 @@
                 {% endif %}
             </div>
         </div>
+        
         <div class="col-12 col-md-3 dont-move">
+            {% if request.user.profile.active %}
             <form action="{% url 'twitter:search' %}" method="post">{% csrf_token %}
                 <div class="search-container">
                     <div class="search">
@@ -230,15 +233,15 @@
                             <input required name="search" type="text" id="zip-code-input" placeholder="Search User">
                     <button type="submit" style="border:0; background: transparent;"><i class="fa fa-search"></i> </button> </a>
                     </form>
+                 
                         </div>
+                      
                     </div>
                 </article>
-                <p><a href="">Terms</a>,
-<a href="">Privacy policy</a>,
-<a href="">Cookies</a>,
-<a href="">Ads info</a>,
-<a href="">More</a>
-© 2020 Twitter, Inc.</p>
+                
+             
+                    {% endif %}
+
 
         </div>
     </div>
