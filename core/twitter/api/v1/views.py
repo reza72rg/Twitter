@@ -4,10 +4,41 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.views import APIView
+from rest_framework import mixins, generics
 from twitter.models import Post
 from .serializers import PostSerializers
 
 # Create your views here.
+
+# region mixins views
+
+class PostMixinsApiView(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+    queryset = Post.objects.order_by('created_date').all()
+    serializer_class = PostSerializers
+    
+    def get(self, request: Request):
+        return self.list(request)
+    def post(self, request: Request):
+        return self.create(request)
+
+class PostDetailMixinsApiView(mixins.RetrieveModelMixin,mixins.DestroyModelMixin,mixins.UpdateModelMixin ,generics.GenericAPIView):
+    queryset = Post.objects.order_by('created_date').all()
+    serializer_class = PostSerializers
+    
+    def get(self, request: Request, pk:int):
+        return self.retrieve(request, pk)
+    def put(self, request: Request, pk:int):
+        return self.update(request, pk)
+    def delete(self, request: Request, pk:int):
+        return self.destroy(request, pk)
+    
+    
+    
+    
+    
+# endregion
+
+
 
 # region class base views
 
@@ -50,8 +81,6 @@ class PostDetailAPIView(APIView):
         return Response(None, status.HTTP_202_ACCEPTED)
         
 # endregion
-
-
 
 # region function base views
 
