@@ -8,9 +8,17 @@ from .serializers import PostSerializers
 # Create your views here.
 
 
-@api_view(['GET'])
+@api_view(['GET','POST'])
 def PostListApi(request: Request):
-    posts = Post.objects.all()
-    posts_serializer = PostSerializers(posts, many=True)
-    return Response(posts_serializer.data , status.HTTP_200_OK)
-    
+    if request.method == 'GET':
+        posts = Post.objects.all()
+        posts_serializer = PostSerializers(posts, many=True)
+        return Response(posts_serializer.data , status.HTTP_200_OK)
+    elif request.method == 'POST':
+        serializer = PostSerializers(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data , status.HTTP_201_CREATED)
+    else:
+        return Response(serializer.data , status.HTTP_400_BAD_REQUEST)
+         
