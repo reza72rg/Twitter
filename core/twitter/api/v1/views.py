@@ -22,3 +22,28 @@ def PostListApi(request: Request):
     else:
         return Response(serializer.data , status.HTTP_400_BAD_REQUEST)
          
+@api_view(['GET','DELETE','PUT'])     
+def PostApiDelete(request : Request, pk: int):
+    try:
+        post = Post.objects.get(pk = pk)
+    except Post.DoesNotExist:
+        return Response(None, status.HTTP_404_NOT_FOUND)
+    
+    if request.method == 'GET':
+        post_serializers = PostSerializers(post)
+        return Response(post_serializers.data , status.HTTP_200_OK)
+    
+    elif request.method == 'PUT':
+        serializers = PostSerializers(post, data = request.data)
+        if serializers.is_valid():
+            serializers.save()
+            return Response(serializers.data , status.HTTP_202_ACCEPTED)
+        return Response(None , status.HTTP_400_BAD_REQUEST)
+            
+        
+    elif request.method == 'DELETE':
+        post.delete()
+        return Response(None, status.HTTP_204_NO_CONTENT)
+
+        
+    
