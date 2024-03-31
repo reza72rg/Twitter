@@ -114,7 +114,7 @@ class FollowersView(LoginRequiredMixin, View):
 class UserCreatePostView(LoginRequiredMixin, CreateView):
     model = Post
     template_name = 'twitter/post_new.html'
-    fields = ["content"]
+    fields = ["content","image"]
     success_url = reverse_lazy("twitter:home_page")
 
     def form_valid(self, form):
@@ -131,7 +131,7 @@ class DeletePostView(LoginRequiredMixin, DeleteView):
 
 class UpdatePostView(LoginRequiredMixin, UpdateView):
     model = Post
-    fields = ["content"]
+    fields = ["content","image"]
     success_url = reverse_lazy("twitter:home_page")
     def form_valid(self, form):
         return super(UpdatePostView, self).form_valid(form)

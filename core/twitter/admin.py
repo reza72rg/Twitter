@@ -7,10 +7,10 @@ from twitter.models import Post, Like, DisLike, Comment
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     def get_fields(self, request, obj=None):
-        return ["content", "author","archive"]
+        return ["image","content", "author","archive"]
 
     def get_list_display(self, request):
-        return ["content", "author","archive"]
+        return ["content","image", "author","archive"]
 
     def get_search_fields(self, request):
         return ["author","archive" ]

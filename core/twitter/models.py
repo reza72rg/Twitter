@@ -1,11 +1,13 @@
 from django.db import models
-from accounts.models import User, Profile
-# Create your models here.
+from accounts.models import  Profile
+from core.tools import UploadToPathAndRename
+from accounts.models import MainModel
 
-
-class Post(models.Model):
+class Post(MainModel):
     content = models.TextField()
     author = models.ForeignKey(Profile, on_delete = models.CASCADE )
+    image = models.ImageField(upload_to=UploadToPathAndRename("posts"),default='posts/default.jpg'
+    )
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     archive = models.BooleanField(default = True)
@@ -45,3 +47,14 @@ class Comment(models.Model):
     
     def __str__(self):
         return f'{self.author} comments in {self.post}'
+    
+    
+    
+class ImageFiled(MainModel):
+    post = models.ForeignKey(Post,on_delete=models.CASCADE)
+    image = models.ImageField(upload_to=UploadToPathAndRename("posts"),default='posts/default.jpg'
+    )
+    
+    
+    def __str__(self):
+        return self.post    

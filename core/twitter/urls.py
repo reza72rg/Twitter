@@ -23,6 +23,7 @@ urlpatterns = [
     path('follow/',FollowUserView.as_view(),name = "follow"),
     path('like/<int:pk>/',LikePostView.as_view(),name = "like-post"),
     path('dislike/<int:pk>/',DisLikePostView.as_view(),name = "dislike-post"),
+    path("twitter/api/v1/", include("twitter.api.v1.urls")),
 
 
 ]

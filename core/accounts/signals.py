@@ -11,3 +11,9 @@ def update_profile(sender, instance, created, **kwargs):
         for post in posts:
             post.archive = False
             post.save()
+    if instance.active:
+        posts = Post.objects.filter(author= instance.user.profile)
+        for post in posts:
+            post.archive = True
+            post.save()
+
