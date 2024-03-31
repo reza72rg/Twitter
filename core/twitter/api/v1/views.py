@@ -10,6 +10,18 @@ from .serializers import PostSerializers
 
 # Create your views here.
 
+# region generics
+class PostgenericsApiView(generics.ListCreateAPIView):
+    queryset = Post.objects.order_by('created_date').all()
+    serializer_class = PostSerializers
+    
+class PostgenericsDetailApiView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Post.objects.order_by('created_date').all()
+    serializer_class = PostSerializers
+    
+    
+#endregion
+
 # region mixins views
 
 class PostMixinsApiView(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
@@ -32,13 +44,9 @@ class PostDetailMixinsApiView(mixins.RetrieveModelMixin,mixins.DestroyModelMixin
     def delete(self, request: Request, pk:int):
         return self.destroy(request, pk)
     
-    
-    
-    
+       
     
 # endregion
-
-
 
 # region class base views
 
