@@ -1,9 +1,10 @@
 from rest_framework import  generics
 from rest_framework import viewsets
 from django.contrib.auth.models import User
-from twitter.models import Profile, Like, DisLike
+from twitter.models import Profile, Like, DisLike, Comment
 from twitter.models import Post
-from .serializers import PostSerializers, UserSerializers, LikeSerializers, DislikeSerializers
+from .serializers import PostSerializers, UserSerializers, LikeSerializers\
+    , DislikeSerializers, CommentSerializers
 
 # Create your views here.
 
@@ -24,6 +25,10 @@ class  DisLikeViewsetsApiView(viewsets.ModelViewSet):
     queryset = DisLike.objects.all()
     serializer_class = DislikeSerializers    
     
-            
+class  CommentViewsetsApiView(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializers    
+    
+                     
     
     

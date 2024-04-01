@@ -1,7 +1,7 @@
 from twitter.models import Post
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from twitter.models import Profile, Like, DisLike
+from twitter.models import Profile, Like, DisLike, Comment
 
 class PostSerializers(serializers.ModelSerializer):
     class Meta:
@@ -13,14 +13,19 @@ class UserSerializers(serializers.ModelSerializer):
     
     class Meta:
         model = Profile
-        fields = ['user','posts_author']
+        fields = ['id','user','posts_author']
         
 class LikeSerializers(serializers.ModelSerializer):
     class Meta:
         model = Like
-        fields = ['user', 'post']
+        fields = ['id','user', 'post']
 
 class DislikeSerializers(serializers.ModelSerializer):
     class Meta:
         model = DisLike
-        fields = ['user', 'post']
+        fields = ['id','user', 'post']
+
+class CommentSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['id','author', 'post', 'content', 'approach']

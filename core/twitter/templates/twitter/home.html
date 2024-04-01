@@ -168,7 +168,7 @@
 
                                 </small>
                                 <small style="opacity: 0.4; margin-left:15px;">
-                                    <a href="/post/{{post.id}}/">
+                                    <a href="{% url 'twitter:details_post' post.id %}">
                                         <i style=" font-size: 16px;" class="far fa-comment"></i> {{ post.number_of_comments }} comment(s)
                                     </a>
 
