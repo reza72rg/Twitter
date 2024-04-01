@@ -5,7 +5,7 @@ from accounts.models import MainModel
 
 class Post(MainModel):
     content = models.TextField()
-    author = models.ForeignKey(Profile, on_delete = models.CASCADE )
+    author = models.ForeignKey(Profile, on_delete = models.CASCADE , related_name = 'posts_author')
     image = models.ImageField(upload_to=UploadToPathAndRename("posts"),default='posts/default.jpg'
     )
     created_date = models.DateTimeField(auto_now_add=True)

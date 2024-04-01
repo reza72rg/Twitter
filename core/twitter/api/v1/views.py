@@ -6,8 +6,10 @@ from rest_framework.request import Request
 from rest_framework.views import APIView
 from rest_framework import mixins, generics
 from rest_framework import viewsets
+from django.contrib.auth.models import User
+from twitter.models import Profile
 from twitter.models import Post
-from .serializers import PostSerializers
+from .serializers import PostSerializers, UserSerializers
 
 # Create your views here.
 
@@ -16,6 +18,14 @@ from .serializers import PostSerializers
 class  PostViewsetsApiView(viewsets.ModelViewSet):
     queryset = Post.objects.order_by('created_date').all()
     serializer_class = PostSerializers
+    
+class  UserViewsetsApiView(generics.ListAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = UserSerializers    
+    
+    
+    
+    
 # endregion
 
 # region generics
