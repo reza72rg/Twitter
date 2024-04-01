@@ -5,10 +5,18 @@ from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.views import APIView
 from rest_framework import mixins, generics
+from rest_framework import viewsets
 from twitter.models import Post
 from .serializers import PostSerializers
 
 # Create your views here.
+
+# region viewsets
+
+class  PostViewsetsApiView(viewsets.ModelViewSet):
+    queryset = Post.objects.order_by('created_date').all()
+    serializer_class = PostSerializers
+# endregion
 
 # region generics
 class PostgenericsApiView(generics.ListCreateAPIView):
