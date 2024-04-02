@@ -11,13 +11,17 @@ class CommentSerializers(serializers.ModelSerializer):
 class PostSerializers(serializers.ModelSerializer):
     snippet = serializers.CharField( source = 'get_snippet', read_only= True)
     relative_url = serializers.URLField( source= 'get_absolute_url', read_only= True)
- 
+    absolute_url = serializers.SerializerMethodField()
    
     
     class Meta:
         model = Post
-        fields = ['id', 'content','author', 'snippet','relative_url', 'archive']
-   
+        fields = ['id', 'content','author', 'snippet','relative_url', 'absolute_url', 'archive']
+    def get_absolute_url(self, obj):
+        request = self.context.get('request')
+        return request.build_absolute_uri(obj.pk)
+
+    
 class UserSerializers(serializers.ModelSerializer):
     posts_author = PostSerializers(read_only= True, many= True)
     user_comment = CommentSerializers(read_only= True, many= True)
