@@ -12,7 +12,9 @@ class PostSerializers(serializers.ModelSerializer):
     snippet = serializers.CharField( source = 'get_snippet', read_only= True)
     relative_url = serializers.URLField( source= 'get_absolute_url', read_only= True)
     absolute_url = serializers.SerializerMethodField()
-   
+    author = serializers.SlugRelatedField(
+        many=False, slug_field="user.username", queryset=Profile.objects.all()
+    )
     
     class Meta:
         model = Post
