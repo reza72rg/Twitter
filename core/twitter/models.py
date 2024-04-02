@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from accounts.models import  Profile
 from core.tools import UploadToPathAndRename
 from accounts.models import MainModel
@@ -23,6 +24,11 @@ class Post(MainModel):
         return DisLike.objects.filter(post=self).count() 
     def __str__(self):
         return self.content[:15]
+    
+    def get_snippet(self):
+        return self.content[0:5]
+    def get_absolute_url(self):
+        return reverse('twitter:api-v1:task-detail', kwargs={'pk':self.pk})
 
 class Like(models.Model):
     user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='ulike')

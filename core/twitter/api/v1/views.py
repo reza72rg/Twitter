@@ -1,6 +1,7 @@
 from rest_framework import  generics
 from rest_framework import viewsets
 from django.contrib.auth.models import User
+from rest_framework.permissions import IsAuthenticated
 from twitter.models import Profile, Like, DisLike, Comment
 from twitter.models import Post
 from .serializers import PostSerializers, UserSerializers, LikeSerializers\
@@ -10,6 +11,7 @@ from .serializers import PostSerializers, UserSerializers, LikeSerializers\
 
 
 class  PostViewsetsApiView(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
     queryset = Post.objects.order_by('created_date').all()
     serializer_class = PostSerializers
     
