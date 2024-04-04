@@ -8,6 +8,14 @@ class CommentSerializers(serializers.ModelSerializer):
         model = Comment
         fields = ['id','author', 'post', 'content', 'approach']
 
+class UserSerializers(serializers.ModelSerializer):
+    #posts_author = PostSerializers(read_only= True, many= True)
+    #user_comment = CommentSerializers(read_only= True, many= True)
+    username = serializers.CharField(source='user.username', read_only=True)
+    class Meta:
+        model = Profile
+        fields = ['id','username']
+        
 class PostSerializers(serializers.ModelSerializer):
     snippet = serializers.CharField( source = 'get_snippet', read_only= True)
     relative_url = serializers.URLField( source= 'get_absolute_url', read_only= True)
@@ -18,7 +26,7 @@ class PostSerializers(serializers.ModelSerializer):
     
     class Meta:
         model = Post
-        fields = ['id', 'content','author', 'snippet','relative_url', 'absolute_url', 'archive']
+        fields = ['id', 'content', 'snippet','relative_url', 'absolute_url', 'archive','author']
         read_only_fields = ['author']
     def get_absolute_url(self, obj):
         request = self.context.get('request')
@@ -33,18 +41,15 @@ class PostSerializers(serializers.ModelSerializer):
             rep.pop('relative_url')
         else:
             rep.pop('content')
+        rep["author"] = UserSerializers(
+            instance.author, context={"request": request}
+        ).data
         return rep
     def create(self, validated_data):
         validated_data['author'] = Profile.objects.get(user__id = self.context.get('request').user.id)
         return super().create(validated_data)
     
-class UserSerializers(serializers.ModelSerializer):
-    posts_author = PostSerializers(read_only= True, many= True)
-    user_comment = CommentSerializers(read_only= True, many= True)
-    class Meta:
-        model = Profile
-        fields = ['id','user','posts_author','user_comment']
-        
+
 class LikeSerializers(serializers.ModelSerializer):
     class Meta:
         model = Like

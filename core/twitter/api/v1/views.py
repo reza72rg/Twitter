@@ -6,12 +6,12 @@ from twitter.models import Profile, Like, DisLike, Comment
 from twitter.models import Post
 from .serializers import PostSerializers, UserSerializers, LikeSerializers\
     , DislikeSerializers, CommentSerializers
-
+from .permission import IsOwnerOrReadOnly
 # Create your views here.
 
 
 class  PostViewsetsApiView(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     queryset = Post.objects.order_by('created_date').all()
     serializer_class = PostSerializers
     
