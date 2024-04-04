@@ -2,6 +2,8 @@ from rest_framework import  generics
 from rest_framework import viewsets
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
 from twitter.models import Profile, Like, DisLike, Comment
 from twitter.models import Post
 from .serializers import PostSerializers, UserSerializers, LikeSerializers\
@@ -14,6 +16,9 @@ class  PostViewsetsApiView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     queryset = Post.objects.order_by('created_date').all()
     serializer_class = PostSerializers
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_fields = ['author', 'archive']
+    search_fields = ['content']
     
 class  UserViewsetsApiView(generics.ListAPIView):
     queryset = Profile.objects.all()
