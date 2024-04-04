@@ -9,6 +9,8 @@ from twitter.models import Post
 from .serializers import PostSerializers, UserSerializers, LikeSerializers\
     , DislikeSerializers, CommentSerializers
 from .permission import IsOwnerOrReadOnly
+from twitter.api.v1.pagination import CustomPagination
+
 # Create your views here.
 
 
@@ -20,6 +22,7 @@ class  PostViewsetsApiView(viewsets.ModelViewSet):
     filterset_fields = ['author', 'archive']
     search_fields = ['content']
     ordering_fields = ['created_date']
+    pagination_class  = CustomPagination
     
 class  UserViewsetsApiView(generics.ListAPIView):
     queryset = Profile.objects.all()
