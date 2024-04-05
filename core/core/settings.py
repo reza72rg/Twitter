@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'django_cleanup.apps.CleanupConfig',
     'rest_framework',
     'django_filters',
-    
+    'drf_yasg',
 
 
     ]

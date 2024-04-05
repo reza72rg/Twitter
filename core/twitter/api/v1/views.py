@@ -1,6 +1,7 @@
 from rest_framework import  generics
 from rest_framework import viewsets
 from django.contrib.auth.models import User
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -23,7 +24,11 @@ class  PostViewsetsApiView(viewsets.ModelViewSet):
     search_fields = ['content']
     ordering_fields = ['created_date']
     pagination_class  = CustomPagination
-    
+
+    # def get_queryset(self, *args, **kwargs):
+    #     return (super().get_queryset(*args, **kwargs).filter(author=self.request.user.profile))
+
+  
 class  UserViewsetsApiView(generics.ListAPIView):
     queryset = Profile.objects.all()
     serializer_class = UserSerializers    

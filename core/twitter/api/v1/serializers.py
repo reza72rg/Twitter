@@ -26,8 +26,9 @@ class PostSerializers(serializers.ModelSerializer):
     
     class Meta:
         model = Post
-        fields = ['id', 'content', 'snippet','relative_url', 'absolute_url', 'archive','author']
+        fields = ['id', 'content', 'snippet','relative_url','absolute_url', 'archive','author']
         read_only_fields = ['author']
+   
     def get_absolute_url(self, obj):
         request = self.context.get('request')
         return request.build_absolute_uri(obj.pk)
