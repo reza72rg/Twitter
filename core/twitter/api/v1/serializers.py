@@ -3,10 +3,19 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from twitter.models import Profile, Like, DisLike, Comment
 
-class CommentSerializers(serializers.ModelSerializer):
+class CommentSerializers(serializers.ModelSerializer):   
     class Meta:
         model = Comment
-        fields = ['id','author', 'post', 'content', 'approach']
+        fields = ['id', 'post', 'content', 'approach' ,'author']
+        read_only_fields = ['author']
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep["author"] = UserSerializers(
+            instance.author,).data
+        return rep
+    def create(self, validated_data):
+        validated_data['author'] = Profile.objects.get(user__id = self.context.get('request').user.id)
+        return super().create(validated_data)
 
 class UserSerializers(serializers.ModelSerializer):
     #posts_author = PostSerializers(read_only= True, many= True)
@@ -54,9 +63,28 @@ class PostSerializers(serializers.ModelSerializer):
 class LikeSerializers(serializers.ModelSerializer):
     class Meta:
         model = Like
-        fields = ['id','user', 'post']
+        fields = ['id', 'post','user']
+        read_only_fields = ['user']
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep["user"] = UserSerializers(
+            instance.user).data
+        return rep
+    def create(self, validated_data):
+        validated_data['user'] = Profile.objects.get(user__id = self.context.get('request').user.id)
+        return super().create(validated_data)
+
 
 class DislikeSerializers(serializers.ModelSerializer):
     class Meta:
         model = DisLike
-        fields = ['id','user', 'post']
+        fields = ['id', 'post','user']
+        read_only_fields = ['user']
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep["user"] = UserSerializers(
+            instance.user).data
+        return rep
+    def create(self, validated_data):
+        validated_data['user'] = Profile.objects.get(user__id = self.context.get('request').user.id)
+        return super().create(validated_data)
