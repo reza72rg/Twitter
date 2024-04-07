@@ -54,7 +54,10 @@ class Comment(models.Model):
     def __str__(self):
         return f'{self.author} comments in {self.post}'
     
-    
+    def get_snippet(self):
+        return self.content[0:5]
+    def get_absolute_url(self):
+        return reverse('twitter:api-v1:comment-detail', kwargs={'pk':self.pk})
     
 class ImageFiled(MainModel):
     post = models.ForeignKey(Post,on_delete=models.CASCADE)

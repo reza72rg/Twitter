@@ -41,6 +41,7 @@ class  DisLikeViewsetsApiView(viewsets.ModelViewSet):
     queryset = DisLike.objects.all()
     serializer_class = DislikeSerializers    
     
+    
 class  CommentViewsetsApiView(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializers    
