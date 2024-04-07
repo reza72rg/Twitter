@@ -37,7 +37,11 @@ class Profile(MainModel):
     @property
     def following(self):
         return Follow.objects.filter(user__id=self.user.id).count()
-    
+    def get_snippet(self):
+        if self.descriptions:
+            return self.descriptions[0:5]
+        else:
+            return f"null"
 # Signal to create profile when user is created
 @receiver(post_save, sender=User)
 def save_profile(sender, instance, created, **kwargs):

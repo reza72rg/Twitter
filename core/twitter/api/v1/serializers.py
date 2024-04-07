@@ -35,10 +35,27 @@ class UserSerializers(serializers.ModelSerializer):
     #posts_author = PostSerializers(read_only= True, many= True)
     #user_comment = CommentSerializers(read_only= True, many= True)
     username = serializers.CharField(source='user.username', read_only=True)
+    email = serializers.CharField(source='user.email', read_only=True)
+    snippet = serializers.CharField( source = 'get_snippet', read_only= True)
+    absolute_url = serializers.SerializerMethodField()
     class Meta:
         model = Profile
-        fields = ['id','username']
-        
+        fields = ['id','username', 'email', 'active', 'descriptions','snippet','absolute_url']
+    def to_representation(self, instance):
+        request = self.context.get('request')
+        rep = super().to_representation(instance)
+        if request.parser_context.get('kwargs').get('pk'):
+            rep.pop('snippet')
+            rep.pop('absolute_url')
+        else:
+            rep.pop('descriptions')
+            rep.pop('email')
+            
+        return rep
+    def get_absolute_url(self, obj):
+        request = self.context.get('request')
+        return request.build_absolute_uri(obj.pk)
+     
 class PostSerializers(serializers.ModelSerializer):
     snippet = serializers.CharField( source = 'get_snippet', read_only= True)
     relative_url = serializers.URLField( source= 'get_absolute_url', read_only= True)

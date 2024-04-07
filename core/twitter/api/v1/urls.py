@@ -6,6 +6,7 @@ from .views import (
     LikeViewsetsApiView,
     DisLikeViewsetsApiView,
     CommentViewsetsApiView,
+    UserDetailsViewsetsApiView,
 )
 app_name = "api-v1"
 
@@ -17,5 +18,6 @@ router.register("comment", CommentViewsetsApiView, basename="comment")
 
 urlpatterns = [
     path("users/", UserViewsetsApiView.as_view(), name= "task-users"),
+    path("users/<int:pk>/", UserDetailsViewsetsApiView.as_view(), name= "users-details"),
 ] + router.urls
 

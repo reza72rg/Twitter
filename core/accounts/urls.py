@@ -11,7 +11,7 @@ urlpatterns = [
     # Register view
     path("register/", RegisterPageView.as_view(), name="register"),
     path('profile-edit/<int:pk>/', ProfileEditView.as_view(), name='profile-edit'),
-     path("api/v1/", include("accounts.api.v1.urls")),
+    path("api/v1/", include("accounts.api.v1.urls")),
  
 
 ]

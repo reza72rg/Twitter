@@ -31,7 +31,12 @@ class  PostViewsetsApiView(viewsets.ModelViewSet):
   
 class  UserViewsetsApiView(generics.ListAPIView):
     queryset = Profile.objects.all()
-    serializer_class = UserSerializers    
+    serializer_class = UserSerializers  
+    
+class  UserDetailsViewsetsApiView(generics.RetrieveAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = UserSerializers  
+      
     
 class  LikeViewsetsApiView(viewsets.ModelViewSet):
     queryset = Like.objects.all()
