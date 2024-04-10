@@ -6,8 +6,9 @@ from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from accounts.models import Follow
-from .serializers import FollowersSerializers
+from .serializers import FollowersSerializers, UserSerializers
 from accounts.models import Profile
+from rest_framework import viewsets
 
 
 class  FollowersViewsetsApiView(viewsets.ModelViewSet):
@@ -15,3 +16,7 @@ class  FollowersViewsetsApiView(viewsets.ModelViewSet):
     serializer_class = FollowersSerializers    
     
                      
+class  UserViewsetsApiView(generics.ListAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = UserSerializers  
+    

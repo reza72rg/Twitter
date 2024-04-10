@@ -7,7 +7,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from twitter.models import Profile, Like, DisLike, Comment
 from twitter.models import Post
-from .serializers import PostSerializers, UserSerializers, LikeSerializers\
+from .serializers import PostSerializers, LikeSerializers\
     , DislikeSerializers, CommentSerializers
 from .permission import IsOwnerOrReadOnly
 from twitter.api.v1.pagination import CustomPagination
@@ -29,14 +29,7 @@ class  PostViewsetsApiView(viewsets.ModelViewSet):
     #     return (super().get_queryset(*args, **kwargs).filter(author=self.request.user.profile))
 
   
-class  UserViewsetsApiView(generics.ListAPIView):
-    queryset = Profile.objects.all()
-    serializer_class = UserSerializers  
-    
-class  UserDetailsViewsetsApiView(generics.RetrieveAPIView):
-    queryset = Profile.objects.all()
-    serializer_class = UserSerializers  
-      
+
     
 class  LikeViewsetsApiView(viewsets.ModelViewSet):
     queryset = Like.objects.all()
