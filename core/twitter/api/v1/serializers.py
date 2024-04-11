@@ -69,11 +69,15 @@ class PostSerializers(serializers.ModelSerializer):
         return super().create(validated_data)
     
 
+
+
+
 class LikeSerializers(serializers.ModelSerializer):
     class Meta:
         model = Like
         fields = ['id', 'post','user']
         read_only_fields = ['user']
+  
     def to_representation(self, instance):
         rep = super().to_representation(instance)
         rep["user"] = UserTestSerializers(
@@ -85,6 +89,13 @@ class LikeSerializers(serializers.ModelSerializer):
         if relation.exists():
             raise ValidationError({"error": "You cannot Like this post again."}, code='invalid')
         return super().create(validated_data)
+    
+    
+
+
+
+
+
 
 
 class DislikeSerializers(serializers.ModelSerializer):
