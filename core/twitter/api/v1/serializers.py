@@ -68,10 +68,6 @@ class PostSerializers(serializers.ModelSerializer):
         validated_data['author'] = Profile.objects.get(user__id = self.context.get('request').user.id)
         return super().create(validated_data)
     
-
-
-
-
 class LikeSerializers(serializers.ModelSerializer):
     class Meta:
         model = Like
@@ -80,9 +76,9 @@ class LikeSerializers(serializers.ModelSerializer):
   
     def to_representation(self, instance):
         rep = super().to_representation(instance)
-        rep["user"] = UserTestSerializers(
-            instance.user).data
+        rep['user'] = UserTestSerializers(instance.user).data
         return rep
+    
     def create(self, validated_data):
         validated_data['user'] = Profile.objects.get(user__id = self.context.get('request').user.id)
         relation = Like.objects.filter(user=validated_data['user'], post=validated_data['post'])   

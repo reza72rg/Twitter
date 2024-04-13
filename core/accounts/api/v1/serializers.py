@@ -2,7 +2,8 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from accounts.models import Follow, Profile
 from rest_framework.exceptions import ValidationError
-
+from django.contrib.auth.password_validation import validate_password
+from django.core import exceptions
 
 class UserSerializers(serializers.ModelSerializer):
     #posts_author = PostSerializers(read_only= True, many= True)
@@ -20,7 +21,27 @@ class UserTestSerializers(serializers.ModelSerializer):
         model = Profile
         fields = ['id','username']
    
-  
+class Registerserializer(serializers.ModelSerializer):
+    email = serializers.EmailField() 
+    password1 = serializers.CharField(max_length=255, write_only=True)
+    class Meta:
+        model = User
+        fields = ['username','email','password','password1']
+    def validate(self, attrs):
+        if attrs.get('password') != attrs.get('password1'):
+            raise serializers.ValidationError({
+                'details': 'password does not match '
+            })
+        try:
+            validate_password(attrs.get('password'))
+        except exceptions.ValidationError as e:
+            raise serializers.ValidationError({'password': list(e.messages)})
+        return super().validate(attrs)
+    
+    def create(self, validated_data):
+        return super().create(validated_data)
+   
+   
 
     
     
