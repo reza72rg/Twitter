@@ -27,23 +27,20 @@ class Registerserializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username','email','password','password1']
+        
     def validate(self, attrs):
         if attrs.get('password') != attrs.get('password1'):
-            raise serializers.ValidationError({
-                'details': 'password does not match '
-            })
+            raise serializers.ValidationError({'detail':'password does not match'})
         try:
             validate_password(attrs.get('password'))
         except exceptions.ValidationError as e:
-            raise serializers.ValidationError({'password': list(e.messages)})
+            raise serializers.ValidationError({'password':list(e.messages)})           
         return super().validate(attrs)
-    
+  
     def create(self, validated_data):
-        return super().create(validated_data)
-   
-   
-
-    
+        print('hiiiiiiiiiiiiiiiiiiiiiiiiiii')
+        validated_data.pop('password1',None)
+        return User.objects.create_user(**validated_data)
     
 class FollowersSerializers(serializers.ModelSerializer):
     class Meta:

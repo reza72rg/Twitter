@@ -11,6 +11,20 @@ from accounts.models import Profile
 from rest_framework import viewsets
 from rest_framework import status
 
+
+class RegisterViewsetsApiView(generics.GenericAPIView):
+    serializer_class = Registerserializer
+    def post(self,request,*args,**kwargs):
+        serializer = Registerserializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            data = {
+                'username': serializer.validated_data['username']
+            }
+            return Response(data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+    
+    
 class  FollowersViewsetsApiView(viewsets.ModelViewSet):
     queryset = Follow.objects.all()
     serializer_class = FollowersSerializers    
@@ -21,14 +35,3 @@ class  UserViewsetsApiView(generics.ListAPIView):
     serializer_class = UserSerializers  
     
 
-class RegisterViewsetsApiView(generics.GenericAPIView):
-    serializer_class = Registerserializer
-    def post(self,request,*args,**kwargs):
-        serializer = Registerserializer(data = request.data)
-        if serializer.is_valid():
-            data = {
-                'email': serializer.validated_data['email']
-            }
-           
-            return Response(data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
