@@ -4,6 +4,8 @@ from accounts.models import Follow, Profile
 from rest_framework.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
 from django.core import exceptions
+from django.contrib.auth import authenticate
+from django.utils.translation import gettext_lazy as _
 
 class UserSerializers(serializers.ModelSerializer):
     #posts_author = PostSerializers(read_only= True, many= True)
@@ -38,7 +40,6 @@ class Registerserializer(serializers.ModelSerializer):
         return super().validate(attrs)
   
     def create(self, validated_data):
-        print('hiiiiiiiiiiiiiiiiiiiiiiiiiii')
         validated_data.pop('password1',None)
         return User.objects.create_user(**validated_data)
     
@@ -67,9 +68,45 @@ class FollowersSerializers(serializers.ModelSerializer):
             raise ValidationError({"error": "You cannot follow yourself."}, code='invalid')
         elif relation.exists():
             raise ValidationError({"error": "You cannot follow this user again."}, code='invalid')
-        
-        
-        
-        
         return super().create(validated_data)
+    
+    
+    
+    
+class CustomAuthTokenSerializer(serializers.Serializer):
+    username = serializers.CharField(
+        label=_("Username"),
+        write_only=True
+    )
+    password = serializers.CharField(
+        label=_("Password"),
+        style={'input_type': 'password'},
+        trim_whitespace=False,
+        write_only=True
+    )
+    token = serializers.CharField(
+        label=_("Token"),
+        read_only=True
+    )
+
+    def validate(self, attrs):
+        username = attrs.get('username')
+        password = attrs.get('password')
+
+        if username and password:
+            user = authenticate(request=self.context.get('request'),
+                                username=username, password=password)
+
+            # The authenticate call simply returns None for is_active=False
+            # users. (Assuming the default ModelBackend authentication
+            # backend.)
+            if not user:
+                msg = _('Unable to log in with provided credentials.')
+                raise serializers.ValidationError(msg, code='authorization')
+        else:
+            msg = _('Must include "username" and "password".')
+            raise serializers.ValidationError(msg, code='authorization')
+
+        attrs['user'] = user
+        return attrs
     

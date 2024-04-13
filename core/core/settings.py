@@ -45,7 +45,11 @@ INSTALLED_APPS = [
     "crispy_bootstrap4",
     "crispy_forms",
     'django_cleanup.apps.CleanupConfig',
+    
+    # rest framework
     'rest_framework',
+    'rest_framework.authtoken',
+
     'django_filters',
     'drf_yasg',
 
@@ -143,6 +147,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ]
 }
