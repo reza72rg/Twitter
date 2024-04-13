@@ -6,7 +6,8 @@ from .views import (
     FollowersViewsetsApiView,
     UserViewsetsApiView,
     RegisterViewsetsApiView,
-    CustomAuthToken,
+    CustomLoginAuthToken,
+    CustomLogoutAuthToken,
     
     
 )
@@ -17,7 +18,8 @@ router.register("followers", FollowersViewsetsApiView, basename="followers")
 
 
 urlpatterns = [
-    path('api-token/', CustomAuthToken.as_view()),
+    path('api-token/login/', CustomLoginAuthToken.as_view(), name= "token-login"),
+    path('api-token/logout/', CustomLogoutAuthToken.as_view(), name= "token-logout"),
     path("register/", RegisterViewsetsApiView.as_view(), name= "register-users"),
     path("users/", UserViewsetsApiView.as_view(), name= "task-users"),
 ]+ router.urls
