@@ -13,7 +13,7 @@ from .views import (
     RegisterViewsetsApiView,
     CustomLoginAuthToken,
     CustomLogoutAuthToken,
-    
+    ChangePasswordViewsetsApiView,
     
 )
 app_name = "api-v1"
@@ -23,11 +23,17 @@ router.register("followers", FollowersViewsetsApiView, basename="followers")
 
 
 urlpatterns = [
+    path("users/", UserViewsetsApiView.as_view(), name= "task-users"),
+    # Change password
+    path("change-password/", ChangePasswordViewsetsApiView.as_view(), name= "changepassword-users"),
+    # Registrations
+    path("register/", RegisterViewsetsApiView.as_view(), name= "register-users"),
+   
+    # Login Token
     path('api-token/login/', CustomLoginAuthToken.as_view(), name= "token-login"),
     path('api-token/logout/', CustomLogoutAuthToken.as_view(), name= "token-logout"),
-    path("register/", RegisterViewsetsApiView.as_view(), name= "register-users"),
-    path("users/", UserViewsetsApiView.as_view(), name= "task-users"),
     
+    # Login JWT
     path('token-jwt/create/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token-jwt/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token-jwt/verify/', TokenVerifyView.as_view(), name='token_verify'),

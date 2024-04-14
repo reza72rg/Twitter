@@ -7,7 +7,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from accounts.models import Follow
 from .serializers import FollowersSerializers, UserSerializers, Registerserializer\
-    ,CustomTokenSerializer, CustomAuthTokenSerializer
+    ,CustomTokenSerializer, CustomAuthTokenSerializer, ChangePasswordSerializer
 from accounts.models import Profile
 from rest_framework import viewsets
 from rest_framework import status
@@ -68,3 +68,36 @@ class CustomLogoutAuthToken(APIView):
         
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomAuthTokenSerializer
+    
+    
+    
+class ChangePasswordViewsetsApiView(generics.GenericAPIView):
+    serializer_class = ChangePasswordSerializer
+    model = User
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self, queryset=None):
+        obj = self.request.user
+        return obj
+
+    def put(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            # Check old password
+            if not self.object.check_password(
+                serializer.data.get("old_password")
+            ):
+                return Response(
+                    {"old_password": ["Wrong password."]},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            # set_password also hashes the password that the user will get
+            self.object.set_password(serializer.data.get("new_password"))
+            self.object.save()
+            return Response(
+                {"details": "password was change successfully"},
+                status=status.HTTP_200_OK,
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
