@@ -27,7 +27,7 @@ urlpatterns = [
     path("register/", RegisterViewsetsApiView.as_view(), name= "register-users"),
     path("users/", UserViewsetsApiView.as_view(), name= "task-users"),
     
-     path('token-jwt/create/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token-jwt/create/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token-jwt/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token-jwt/verify/', TokenVerifyView.as_view(), name='token_verify'),
 ]+ router.urls

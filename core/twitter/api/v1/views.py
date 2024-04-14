@@ -34,9 +34,9 @@ class  PostViewsetsApiView(viewsets.ModelViewSet):
   
 
     
-# class  LikeViewsetsApiView(viewsets.ModelViewSet):
-#     queryset = Like.objects.all()
-#     serializer_class = LikeSerializers 
+class  LikeViewsetsApiView(viewsets.ModelViewSet):
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializers 
    
     
 class  DisLikeViewsetsApiView(viewsets.ModelViewSet):
@@ -49,7 +49,3 @@ class  CommentViewsetsApiView(viewsets.ModelViewSet):
     serializer_class = CommentSerializers    
     
                          
-class LikeListViewSet(generics.ListCreateAPIView):
-    queryset = Like.objects.all()
-    serializer_class = LikeSerializers
-
