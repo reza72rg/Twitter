@@ -1,3 +1,4 @@
+from typing import Dict
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from accounts.models import Follow, Profile
@@ -6,6 +7,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.core import exceptions
 from django.contrib.auth import authenticate
 from django.utils.translation import gettext_lazy as _
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class UserSerializers(serializers.ModelSerializer):
     #posts_author = PostSerializers(read_only= True, many= True)
@@ -68,7 +70,7 @@ class FollowersSerializers(serializers.ModelSerializer):
     
     
     
-class CustomAuthTokenSerializer(serializers.Serializer):
+class CustomTokenSerializer(serializers.Serializer):
     username = serializers.CharField(
         label=_("Username"),
         write_only=True
@@ -105,3 +107,10 @@ class CustomAuthTokenSerializer(serializers.Serializer):
         attrs['user'] = user
         return attrs
     
+
+class CustomAuthTokenSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        validate_data = super().validate(attrs)
+        validate_data['user_id'] = self.user.id
+        validate_data['email'] = self.user.email
+        return validate_data
