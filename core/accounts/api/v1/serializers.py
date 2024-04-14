@@ -54,11 +54,6 @@ class FollowersSerializers(serializers.ModelSerializer):
         rep["user"] = UserTestSerializers(instance.user).data
         rep["follow_user"] = UserTestSerializers(instance.follow_user).data
         return rep   
-    
-    def create(self, validated_data):          
-        validated_data['user'] = Profile.objects.get(user__id = self.context.get('request').user.id)    
-        if validated_data['follow_user'] != validated_data['user']:
-            return super().create(validated_data)
    
    
     def create(self, validated_data):          

@@ -15,7 +15,17 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 
-
+   
+class  FollowersViewsetsApiView(viewsets.ModelViewSet):
+    queryset = Follow.objects.all()
+    serializer_class = FollowersSerializers    
+    
+                     
+class  UserViewsetsApiView(generics.ListAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = UserSerializers  
+    
+    
 class RegisterViewsetsApiView(generics.GenericAPIView):
     serializer_class = Registerserializer
     def post(self,request,*args,**kwargs):
@@ -28,17 +38,6 @@ class RegisterViewsetsApiView(generics.GenericAPIView):
             return Response(data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
     
-    
-class  FollowersViewsetsApiView(viewsets.ModelViewSet):
-    queryset = Follow.objects.all()
-    serializer_class = FollowersSerializers    
-    
-                     
-class  UserViewsetsApiView(generics.ListAPIView):
-    queryset = Profile.objects.all()
-    serializer_class = UserSerializers  
-    
-
 
 
 
