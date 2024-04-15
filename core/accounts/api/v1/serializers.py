@@ -9,14 +9,38 @@ from django.contrib.auth import authenticate
 from django.utils.translation import gettext_lazy as _
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-class UserSerializers(serializers.ModelSerializer):
-    #posts_author = PostSerializers(read_only= True, many= True)
-    #user_comment = CommentSerializers(read_only= True, many= True)
-    username = serializers.CharField(source='user.username', read_only=True)
-    email = serializers.CharField(source='user.email', read_only=True)
+# class UserSerializers(serializers.ModelSerializer):
+#     #posts_author = PostSerializers(read_only= True, many= True)
+#     #user_comment = CommentSerializers(read_only= True, many= True)
+#     username = serializers.CharField(source='user.username', read_only=True)
+#     email = serializers.CharField(source='user.email', read_only=True)
+#     class Meta:
+#         model = Profile
+#         fields = ['id','username', 'email', 'active', 'descriptions']
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username','email')
+        read_only_fields = ['username']
+class ProfileSerializers(serializers.ModelSerializer):
+    user  = UserSerializer(required=True, many=False)
     class Meta:
         model = Profile
-        fields = ['id','username', 'email', 'active', 'descriptions']
+        fields = ['id','user', 'first_name', 'last_name','image', 'active', 'descriptions']
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop('user')
+        username = self.data['user']['username']
+        user = User.objects.get(username=username)
+        user_serializer = UserSerializer(data=user_data)
+        if user_serializer.is_valid():
+            user_serializer.update(user, user_data)
+            return super(ProfileSerializers, self).update(instance, validated_data)
+        else:
+            raise ValidationError({"error": "Bad request."}, code='invalid')
+
+
+
+
 
 
 class UserTestSerializers(serializers.ModelSerializer):

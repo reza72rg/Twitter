@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from accounts.models import Follow
-from .serializers import FollowersSerializers, UserSerializers, Registerserializer\
+from .serializers import FollowersSerializers, ProfileSerializers, Registerserializer\
     ,CustomTokenSerializer, CustomAuthTokenSerializer, ChangePasswordSerializer
 from accounts.models import Profile
 from rest_framework import viewsets
@@ -15,16 +15,20 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
-
+from django.shortcuts import get_object_or_404
    
 class  FollowersViewsetsApiView(viewsets.ModelViewSet):
     queryset = Follow.objects.all()
     serializer_class = FollowersSerializers    
     
                      
-class  UserViewsetsApiView(generics.ListAPIView):
+class  ProfileViewsetsApiView(generics.RetrieveUpdateAPIView):
     queryset = Profile.objects.all()
-    serializer_class = UserSerializers  
+    serializer_class = ProfileSerializers
+    def get_object(self):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset, user = self.request.user)
+        return obj
     
     
 class RegisterViewsetsApiView(generics.GenericAPIView):

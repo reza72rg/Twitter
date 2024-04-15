@@ -9,7 +9,7 @@ from rest_framework_simplejwt.views import (
 from .views import (
     CustomTokenObtainPairView,
     FollowersViewsetsApiView,
-    UserViewsetsApiView,
+    ProfileViewsetsApiView,
     RegisterViewsetsApiView,
     CustomLoginAuthToken,
     CustomLogoutAuthToken,
@@ -23,7 +23,7 @@ router.register("followers", FollowersViewsetsApiView, basename="followers")
 
 
 urlpatterns = [
-    path("users/", UserViewsetsApiView.as_view(), name= "task-users"),
+    path("profile/", ProfileViewsetsApiView.as_view(), name= "profile-user"),
     # Change password
     path("change-password/", ChangePasswordViewsetsApiView.as_view(), name= "changepassword-users"),
     # Registrations
