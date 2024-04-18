@@ -20,6 +20,7 @@ class Profile(MainModel):
         models.TextField(blank=True, null=True)
     )  # Text field for user profile description
     active = models.BooleanField(default= True)
+    is_verified = models.BooleanField(default= False)
     create_date = models.DateTimeField(
         auto_now_add=True
     )  # Date and time when profile was created
