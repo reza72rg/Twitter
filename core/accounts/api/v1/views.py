@@ -7,7 +7,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from accounts.models import Follow
 from .serializers import FollowersSerializers, ProfileSerializers, Registerserializer\
-    ,CustomTokenSerializer, CustomAuthTokenSerializer, ChangePasswordSerializer
+    ,CustomTokenSerializer, CustomAuthTokenSerializer, ChangePasswordSerializer\
+        ,LoginSerializer 
 from accounts.models import Profile
 from rest_framework import viewsets
 from rest_framework import status
@@ -16,11 +17,19 @@ from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.shortcuts import get_object_or_404
+from django.contrib.auth import authenticate, login, logout
    
 class  FollowersViewsetsApiView(viewsets.ModelViewSet):
-    queryset = Follow.objects.all()
-    serializer_class = FollowersSerializers    
-    
+    # queryset = Follow.objects.all()
+    serializer_class = FollowersSerializers  
+    def get_queryset(self):
+        queryset = Follow.objects.filter(user=self.request.user.profile) 
+        return queryset  
+class  FollowingViewsetsApiView(generics.ListAPIView):
+    serializer_class = FollowersSerializers 
+    def get_queryset(self):
+        queryset = Follow.objects.filter(follow_user = self.request.user.profile)
+        return queryset     
                      
 class  ProfileViewsetsApiView(generics.RetrieveUpdateAPIView):
     queryset = Profile.objects.all()
@@ -104,4 +113,19 @@ class ChangePasswordViewsetsApiView(generics.GenericAPIView):
                 {"details": "password was change successfully"},
                 status=status.HTTP_200_OK,
             )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+class LoginApiView(APIView):
+    def post(self, request, *args, **kwargs):
+        """
+        Login view to get user credentials
+        """
+        serializer = LoginSerializer(data=request.data, many=False)
+
+        if serializer.is_valid():
+            user = serializer.validated_data.get("user")
+            if user is not None and user.is_active:
+                login(request, user)
+                return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

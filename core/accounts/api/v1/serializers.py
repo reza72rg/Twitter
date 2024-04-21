@@ -92,7 +92,14 @@ class FollowersSerializers(serializers.ModelSerializer):
             raise ValidationError({"error": "You cannot follow this user again."}, code='invalid')
         return super().create(validated_data)
     
-    
+    def update(self, instance, validated_data):
+        validated_data['user'] = Profile.objects.get(user__id=self.context.get('request').user.id) 
+        relation = Follow.objects.filter(user=validated_data['user'], follow_user=validated_data['follow_user'])   
+        if validated_data['follow_user'] == validated_data['user']:
+            raise ValidationError({"error": "You cannot follow yourself."}, code='invalid')
+        elif relation.exists():
+            raise ValidationError({"error": "You cannot follow this user again."}, code='invalid')
+        return super().update(instance, validated_data)
     
     
 class ChangePasswordSerializer(serializers.Serializer):
@@ -159,3 +166,35 @@ class CustomAuthTokenSerializer(TokenObtainPairSerializer):
         validate_data['user_id'] = self.user.id
         validate_data['email'] = self.user.email
         return validate_data
+    
+    
+    
+    
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=255)
+    password = serializers.CharField(
+        label=_("Password"),
+        style={"input_type": "password"},
+        trim_whitespace=False,
+        max_length=128,
+        write_only=True,
+    )
+
+    def validate(self, data):
+        username = data.get("username")
+        password = data.get("password")
+
+        if username and password:
+            user = authenticate(
+                request=self.context.get("request"),
+                username=username,
+                password=password,
+            )
+            if not user:
+                msg = _("Unable to log in with provided credentials.")
+                raise serializers.ValidationError(msg, code="authorization")
+        else:
+            msg = _('Must include "username" and "password".')
+            raise serializers.ValidationError(msg, code="authorization")
+        data["user"] = user
+        return data

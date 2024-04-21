@@ -1,10 +1,31 @@
-# requirements.txt
+# general modules
+django >3.2,<3.3
+python-decouple
+Pillow
+djangorestframework
 
-asgiref==3.7.2
-crispy-bootstrap4==2023.1
-Django==5.0.1
-django-crispy-forms==2.1
-pillow==10.2.0
-sqlparse==0.4.4
-tzdata==2023.4
-django-cleanup==8.0.0
+# Third party modules
+Markdown
+django-filter
+drf-yasg[validation]
+djangorestframework-simplejwt
+
+# Deployment modules
+
+# Email modules
+django-mail-templated
+
+djoser
+black
+flake8
+pytest
+pytest-django
+Faker
+
+# Background Process and cache 
+
+celery
+redis
+django-redis
+django-celery-beat
+django-redis

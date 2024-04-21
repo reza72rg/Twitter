@@ -14,6 +14,9 @@ from .views import (
     CustomLoginAuthToken,
     CustomLogoutAuthToken,
     ChangePasswordViewsetsApiView,
+    LoginApiView,
+    #LogoutApiView,
+    FollowingViewsetsApiView,
     
 )
 app_name = "api-v1"
@@ -23,6 +26,13 @@ router.register("followers", FollowersViewsetsApiView, basename="followers")
 
 
 urlpatterns = [
+    # following
+    path("following/", FollowingViewsetsApiView.as_view(), name="following"),
+    
+    # login user
+    path("login/", LoginApiView.as_view(), name="login"),
+    #path("logout/", LogoutApiView.as_view(), name="logout"),
+    
     path("profile/", ProfileViewsetsApiView.as_view(), name= "profile-user"),
     # Change password
     path("change-password/", ChangePasswordViewsetsApiView.as_view(), name= "changepassword-users"),

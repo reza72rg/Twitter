@@ -33,7 +33,8 @@ class CommentSerializers(serializers.ModelSerializer):
         return request.build_absolute_uri(obj.pk)
     
 
-     
+
+    
 class PostSerializers(serializers.ModelSerializer):
     snippet = serializers.CharField( source = 'get_snippet', read_only= True)
     relative_url = serializers.URLField( source= 'get_absolute_url', read_only= True)
@@ -67,7 +68,8 @@ class PostSerializers(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['author'] = Profile.objects.get(user__id = self.context.get('request').user.id)
         return super().create(validated_data)
-    
+
+
 class LikeSerializers(serializers.ModelSerializer):
     class Meta:
         model = Like
