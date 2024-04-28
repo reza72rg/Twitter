@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     # install app
     "crispy_bootstrap4",
     "crispy_forms",
-    'django_cleanup.apps.CleanupConfig',
+    #'django_cleanup.apps.CleanupConfig',
     
     # rest framework
     'rest_framework',
@@ -156,3 +156,4 @@ REST_FRAMEWORK = {
 
     ]
 }
+

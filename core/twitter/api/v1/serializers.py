@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from twitter.models import Profile, Like, DisLike, Comment
 from accounts.api.v1.serializers import UserTestSerializers
 from rest_framework.exceptions import ValidationError
-
+from accounts.models import Follow
 
 class CommentSerializers(serializers.ModelSerializer):   
     snippet = serializers.CharField(source = 'get_snippet',  read_only= True)
@@ -83,10 +83,21 @@ class LikeSerializers(serializers.ModelSerializer):
     
     def create(self, validated_data):
         validated_data['user'] = Profile.objects.get(user__id = self.context.get('request').user.id)
+        print('validated_data=',validated_data)
+        # relation_follow = Follow.objects.filter(user=validated_data['user'], follow_user=validated_data['follow_user'])   
         relation = Like.objects.filter(user=validated_data['user'], post=validated_data['post'])   
+        # if relation_follow.exists():
+        #     raise ValidationError({"error": "You cannot Like this post because you follow user."}, code='invalid')
         if relation.exists():
             raise ValidationError({"error": "You cannot Like this post again."}, code='invalid')
         return super().create(validated_data)
+    
+    
+    
+    
+
+    
+    
     
     
 
