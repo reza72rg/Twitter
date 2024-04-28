@@ -129,3 +129,15 @@ class LoginApiView(APIView):
                 login(request, user)
                 return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+from django.core.mail import send_mail
+
+class TestEmail(generics.GenericAPIView):
+    def get(self,request,*args,**kwargs):        
+        send_mail(
+            "My name is reza latifi",
+            "Here is the message.",
+            "from@example.com",
+            ["to@example.com"],
+            fail_silently=False,
+        )
+        return Response("email send")

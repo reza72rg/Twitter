@@ -17,6 +17,7 @@ from .views import (
     LoginApiView,
     #LogoutApiView,
     FollowingViewsetsApiView,
+    TestEmail,
     
 )
 app_name = "api-v1"
@@ -26,6 +27,7 @@ router.register("followers", FollowersViewsetsApiView, basename="followers")
 
 
 urlpatterns = [
+    path("test/",TestEmail.as_view(),name="test"),
     # following
     path("following/", FollowingViewsetsApiView.as_view(), name="following"),
     
