@@ -49,12 +49,20 @@ class RegisterViewsetsApiView(generics.GenericAPIView):
         serializer = Registerserializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
+            user_name = serializer.validated_data['username']
             data = {
-                'username': serializer.validated_data['username']
+                'username': user_name
             }
+            user_obj = get_object_or_404(User, username = user_name)
+            token = self.get_tokens_for_user(user_obj)
+            email_obj = EmailMessage('email/activation.tpl', {'token': token}, 'reza72rg@gmail.com',to=['test.@gmail.com'])
+            EmailThread(email_obj).start()
             return Response(data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
     
+    def get_tokens_for_user(self, user):
+            refresh = RefreshToken.for_user(user)
+            return str(refresh.access_token)
 
 
 
