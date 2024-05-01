@@ -16,6 +16,7 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
+from mail_templated import send_mail
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate, login, logout
    
@@ -130,14 +131,10 @@ class LoginApiView(APIView):
                 return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 class TestEmail(generics.GenericAPIView):
-    def get(self,request,*args,**kwargs):        
-        send_mail(
-            "My name is reza latifi",
-            "Here is the message.",
-            "from@example.com",
-            ["to@example.com"],
-            fail_silently=False,
-        )
-        return Response("email send")
+    def get(self, request, *args, **kwargs):
+        message = render_to_string('email/hello.tpl', {'name': 'reza latifi'})
+        send_mail('Subject here', message, 'reza72rg@gmail.com', ['test.@gmail.com'])
+        return Response("Send email successful")

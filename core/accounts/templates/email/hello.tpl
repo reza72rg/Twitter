@@ -9,5 +9,5 @@ This is a plain text part.
 {% endblock %}
 
 {% block html %}
-{{token}}
+
 {% endblock %}

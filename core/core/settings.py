@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     # install app
     "crispy_bootstrap4",
     "crispy_forms",
+    'mail_templated',
     #'django_cleanup.apps.CleanupConfig',
     
     # rest framework
@@ -52,6 +53,7 @@ INSTALLED_APPS = [
 
     'django_filters',
     'drf_yasg',
+    
 
 
     ]
