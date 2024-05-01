@@ -159,3 +159,7 @@ class TestEmail(generics.GenericAPIView):
 
 
 
+class ActivationApiView(APIView):
+    def get(self, request,token, *args, **kwargs):
+        print('token==',token)
+        return Response('ok')

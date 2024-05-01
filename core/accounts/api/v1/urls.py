@@ -18,6 +18,7 @@ from .views import (
     #LogoutApiView,
     FollowingViewsetsApiView,
     TestEmail,
+    ActivationApiView,
     
 )
 app_name = "api-v1"
@@ -34,6 +35,9 @@ urlpatterns = [
     # login user
     path("login/", LoginApiView.as_view(), name="login"),
     #path("logout/", LogoutApiView.as_view(), name="logout"),
+    
+    # activation
+    path("activation/confirm/<str:token>/",ActivationApiView.as_view(),name="activation",),
     
     path("profile/", ProfileViewsetsApiView.as_view(), name= "profile-user"),
     # Change password
