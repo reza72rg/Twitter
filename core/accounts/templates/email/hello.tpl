@@ -5,7 +5,7 @@ Email
 {% endblock %}
 
 {% block body %}
-This is a plain text part.
+{{token}}
 {% endblock %}
 
 {% block html %}

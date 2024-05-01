@@ -16,9 +16,11 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
-from mail_templated import send_mail
+from mail_templated import EmailMessage
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate, login, logout
+from ..utils import EmailThread
+from rest_framework_simplejwt.tokens import RefreshToken
    
 class  FollowersViewsetsApiView(viewsets.ModelViewSet):
     # queryset = Follow.objects.all()
@@ -130,11 +132,22 @@ class LoginApiView(APIView):
                 login(request, user)
                 return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
+
 
 class TestEmail(generics.GenericAPIView):
     def get(self, request, *args, **kwargs):
-        message = render_to_string('email/hello.tpl', {'name': 'reza latifi'})
-        send_mail('Subject here', message, 'reza72rg@gmail.com', ['test.@gmail.com'])
+        self.email = 'reza72@email.com'
+        user_obj = get_object_or_404(User, email = self.email)
+        token = self.get_tokens_for_user(user_obj)
+        email_obj = EmailMessage('email/hello.tpl', {'token': token}, 'reza72rg@gmail.com',to=['test.@gmail.com'])
+        EmailThread(email_obj).start()
         return Response("Send email successful")
+    
+    def get_tokens_for_user(self, user):
+        refresh = RefreshToken.for_user(user)
+        return str(refresh.access_token)
+
+
+
+
+
