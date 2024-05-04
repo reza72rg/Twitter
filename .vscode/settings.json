@@ -1,6 +1,7 @@
 {
     "cSpell.words": [
         "authtoken",
+        "Passwordserializer",
         "simplejwt",
         "yasg"
     ]

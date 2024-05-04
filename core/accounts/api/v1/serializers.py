@@ -216,3 +216,21 @@ class ActivateResendSerializer(serializers.Serializer):
             )
         attrs["user"] = user
         return super().validate(attrs)
+class ResetPasswordserializer(serializers.Serializer):
+    user = serializers.CharField(max_length = 100, required=True)
+    email = serializers.EmailField()
+    def validate(self, attrs):
+        username = attrs.get("user")
+        email = attrs.get("email")
+        try:
+            user_objects = User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise serializers.ValidationError(
+                {"errors": "user does not exist"}
+            )
+        if user_objects.email != email:
+                raise serializers.ValidationError(
+                    {"errors": "username and email does not match"}
+                )
+        attrs["user"] = user_objects
+        return super().validate(attrs)

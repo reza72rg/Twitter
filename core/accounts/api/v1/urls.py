@@ -20,6 +20,7 @@ from .views import (
     TestEmail,
     ActivationApiView,
     ActivationResendApiView,
+    ResetPasswordApiView,
     
 )
 app_name = "api-v1"
@@ -40,10 +41,13 @@ urlpatterns = [
     # activation
     path("activation/confirm/<str:token>/",ActivationApiView.as_view(),name="activation",),
     path("activation/resend/",ActivationResendApiView.as_view(),name="resend-activation",),
-    
+   
     path("profile/", ProfileViewsetsApiView.as_view(), name= "profile-user"),
     # Change password
     path("change-password/", ChangePasswordViewsetsApiView.as_view(), name= "changepassword-users"),
+    # Reset Password
+    path("reset-password/",ResetPasswordApiView.as_view(),name="resetpassword",),
+    
     # Registrations
     path("register/", RegisterViewsetsApiView.as_view(), name= "register-users"),
    
