@@ -8,7 +8,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from accounts.models import Follow
 from .serializers import FollowersSerializers, ProfileSerializers, Registerserializer\
     ,CustomTokenSerializer, CustomAuthTokenSerializer, ChangePasswordSerializer\
-        ,LoginSerializer 
+        ,LoginSerializer , ActivateResendSerializer
 from accounts.models import Profile
 from rest_framework import viewsets
 from rest_framework import status
@@ -189,4 +189,26 @@ class ActivationApiView(APIView):
                 {"error": "Invalid Token"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-            
+
+class ActivationResendApiView(generics.GenericAPIView):
+    serializer_class = ActivateResendSerializer
+    def post(self, request, *args, **kwargs):
+        serializer = ActivateResendSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user_object = serializer.validated_data["user"]
+        token = self.get_tokens_for_user(user_object)
+        email_obj = EmailMessage(
+            "email/activation.tpl",
+            {"token": token},
+            "reza72rg@gmail.com",
+            to=[user_object.email],
+        )
+        EmailThread(email_obj).start()
+        return Response(
+            {"detail": "Email activate resend successfully"},
+            status=status.HTTP_200_OK,
+        )
+       
+    def get_tokens_for_user(self, user):
+        refresh = RefreshToken.for_user(user)
+        return str(refresh.access_token)

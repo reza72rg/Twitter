@@ -198,3 +198,21 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError(msg, code="authorization")
         data["user"] = user
         return data
+
+class ActivateResendSerializer(serializers.Serializer):
+    user = serializers.CharField(max_length = 100, required=True)
+    def validate(self, attrs):
+        username = attrs.get("user")
+        try:
+            user_profile = Profile.objects.get(user__username=username)
+            user = User.objects.get(username=username)
+        except user.DoesNotExist:
+            raise serializers.ValidationError(
+                {"errors": "user does not exist"}
+            )
+        if user_profile.is_verified:
+            raise serializers.ValidationError(
+                {"errors": "user already verified"}
+            )
+        attrs["user"] = user
+        return super().validate(attrs)

@@ -19,6 +19,7 @@ from .views import (
     FollowingViewsetsApiView,
     TestEmail,
     ActivationApiView,
+    ActivationResendApiView,
     
 )
 app_name = "api-v1"
@@ -38,6 +39,7 @@ urlpatterns = [
     
     # activation
     path("activation/confirm/<str:token>/",ActivationApiView.as_view(),name="activation",),
+    path("activation/resend/",ActivationResendApiView.as_view(),name="resend-activation",),
     
     path("profile/", ProfileViewsetsApiView.as_view(), name= "profile-user"),
     # Change password
