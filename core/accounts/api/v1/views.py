@@ -20,6 +20,8 @@ from mail_templated import EmailMessage
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from ..utils import EmailThread
+import jwt
+from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
    
 class  FollowersViewsetsApiView(viewsets.ModelViewSet):
@@ -161,5 +163,30 @@ class TestEmail(generics.GenericAPIView):
 
 class ActivationApiView(APIView):
     def get(self, request,token, *args, **kwargs):
-        print('token==',token)
-        return Response('ok')
+        try:
+            token = jwt.decode(token, key=settings.SECRET_KEY, algorithms=["HS256"])
+            user_id = token.get('user_id') 
+            user_obj = Profile.objects.get(pk = user_id)
+            if not user_obj.is_verified:
+                user_obj.is_verified = True
+                user_obj.save()
+                return Response(
+                    {"username": "Successfully activated"},
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                return Response(
+                    {"error": "Your accounts already been verified"},
+                    status=status.HTTP_200_OK,
+                )
+        except jwt.ExpiredSignatureError:
+            return Response(
+                {"error": "Activations link expired"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except jwt.exceptions.DecodeError:
+            return Response(
+                {"error": "Invalid Token"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+            
