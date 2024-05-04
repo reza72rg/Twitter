@@ -234,3 +234,14 @@ class ResetPasswordserializer(serializers.Serializer):
                 )
         attrs["user"] = user_objects
         return super().validate(attrs)
+class ResetPasswordConfirmserializer(serializers.Serializer):
+    new_password = serializers.CharField(max_length=68, min_length=6, write_only=True)
+    new_password1 = serializers.CharField(max_length=68, min_length=6, write_only=True)
+    def validate(self, attrs):
+        if attrs.get('new_password') != attrs.get('new_password1'):
+            raise serializers.ValidationError({'detail':'password does not match'})
+        try:
+            validate_password(attrs.get('new_password'))
+        except exceptions.ValidationError as e:
+            raise serializers.ValidationError({'new_password':list(e.messages)})           
+        return super().validate(attrs)

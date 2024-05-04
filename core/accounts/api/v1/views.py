@@ -8,7 +8,8 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from accounts.models import Follow
 from .serializers import FollowersSerializers, ProfileSerializers, Registerserializer\
     ,CustomTokenSerializer, CustomAuthTokenSerializer, ChangePasswordSerializer\
-        ,LoginSerializer , ActivateResendSerializer, ResetPasswordserializer
+        ,LoginSerializer , ActivateResendSerializer, ResetPasswordserializer\
+            ,ResetPasswordConfirmserializer
 from accounts.models import Profile
 from rest_framework import viewsets
 from rest_framework import status
@@ -237,3 +238,33 @@ class ResetPasswordApiView(generics.GenericAPIView):
         refresh = RefreshToken.for_user(user)
         return str(refresh.access_token)
     
+    
+class ResetPasswordConfirmApiView(APIView):
+    serializer_class = ResetPasswordConfirmserializer
+    def put(self, request,token, *args, **kwargs):
+        try:
+            token = jwt.decode(token, key=settings.SECRET_KEY, algorithms=["HS256"])
+            user_id = token.get('user_id') 
+            user_obj = User.objects.get(pk = user_id)
+        except jwt.ExpiredSignatureError:
+            return Response(
+                {"error": "Reset Password link expired"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except jwt.exceptions.DecodeError:
+            return Response(
+                {"error": "Invalid Token"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            # set_password also hashes the password that the user will get
+            new_password = serializer.validated_data.get("new_password")
+            user_obj.set_password(new_password)
+            user_obj.save()
+            return Response(
+                {"details": "password was change successfully"},
+                status=status.HTTP_200_OK,
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+   

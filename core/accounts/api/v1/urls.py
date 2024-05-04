@@ -21,6 +21,7 @@ from .views import (
     ActivationApiView,
     ActivationResendApiView,
     ResetPasswordApiView,
+    ResetPasswordConfirmApiView,
     
 )
 app_name = "api-v1"
@@ -46,7 +47,8 @@ urlpatterns = [
     # Change password
     path("change-password/", ChangePasswordViewsetsApiView.as_view(), name= "changepassword-users"),
     # Reset Password
-    path("reset-password/",ResetPasswordApiView.as_view(),name="resetpassword",),
+    path("send-reset-password-link/",ResetPasswordApiView.as_view(),name="resetpassword",),
+    path("reset-password/<str:token>/",ResetPasswordConfirmApiView.as_view(),name="resetpassword-confirm",),
     
     # Registrations
     path("register/", RegisterViewsetsApiView.as_view(), name= "register-users"),
