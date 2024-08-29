@@ -1,0 +1,84 @@
+version: "3.9"
+
+services:
+  redis_twitter:
+    container_name: redis_twitter
+    image: redis
+    restart: always
+    ports:
+      - "6380:6379"  # Updated port mapping
+    command: redis-server --save 60 1 --loglevel warning
+
+  postgresql_twitter:
+    image: postgres:latest
+    container_name: postgresql_twitter
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "5434:5432"
+
+  backend_twitter:
+    build: .
+    container_name: backend_twitter
+    # command: gunicorn core.wsgi --bind 0.0.0.0:8000
+    command: python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic --noinput gunicorn core.wsgi --bind 0.0.0.0:8000
+    volumes:
+      - ./core:/app_twitter
+      - static_volume:/app_twitter/static
+      - media_volume:/app_twitter/media
+    expose:
+      - "8000"
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - DEBUG=${DEBUG}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+      - DATABASE_ENGINE=${DATABASE_ENGINE}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_PORT=${DATABASE_PORT}
+    depends_on:
+      - redis_twitter
+      - postgresql_twitter
+
+  nginx_twitter:
+    image: nginx
+    container_name: nginx_twitter
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./default.conf:/etc/nginx/conf.d/default.conf
+      - static_volume:/home/app/static
+      - media_volume:/home/app/media
+    depends_on:
+      - redis_twitter
+      - backend_twitter
+  worker_celery_twitter:
+    build: .
+    container_name: worker_celery_twitter
+    command: celery -A core worker --loglevel warning
+    user: "myuser"
+    volumes:
+      - ./core:/app_twitter/
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - DEBUG=${DEBUG}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+      - DATABASE_ENGINE=${DATABASE_ENGINE}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_PORT=${DATABASE_PORT}
+    depends_on:
+      - redis_twitter
+      - postgresql_twitter
+      - backend_twitter
+
+volumes:
+  static_volume:
+  media_volume:
