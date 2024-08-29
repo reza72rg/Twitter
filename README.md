@@ -35,6 +35,15 @@ Now, to apply this migrations run the following command
 python manage.py migrate
 ```
 
+Build the Docker image by running the following command in the base directory:
+```bash
+docker build -t twitter .
+```
+Once the image is built, you need to run the container. Use the following command:
+```bash
+docker-compose up --build.
+```
+
 ### options
 Project it self has the user creation form but still in order to use the admin you need to create a super user.you can use the createsuperuser option to make a super user.
 ```bash
