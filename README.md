@@ -5,70 +5,10 @@ Fully functional Django App that looks ecxatly like real Twitter.
 Demo Image:
 ![](TwitterDemo.png)
 
-## Installation
-
-1. Clone this repository to your local machine:
-
-   
-bash
-   git clone https://github.com/reza72rg/Twitter
-   
-2. Install the required dependencies:
-
-   
-bash
-   pip install -r requirements.txt
-   
-3. Set up the database by running migrations:
-
-   
-bash
-   python manage.py migrate
-   
-4. Start the development server:
-
-   
-bash
-   python manage.py runserver
-   
-5. Open the program in your web browser at `http://127.0.0.1:8000`.
-
-## API Documentation
-
-The API documentation can be found at `http://127.0.0.1:8000/api/v1/` and `http://127.0.0.1:8000/accounts/api/v1/`, providing details on how to interact with the REST API endpoints.
-
-## Contributing
-
-Contributions are welcome! If you have any suggestions, bug reports, or feature requests, please open an issue or submit a pull request.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
-
-## Acknowledgements
-
-- Special thanks to [Ali Bigdali] for their assistance and feedback during the development of this project.
-
-## Performance Testing
-
-Using Locust, the API tolerance threshold is created and its performance is checked by generating artificial traffic on the site. It can be tested at the address `http://127.0.0.1:8089/`.
-
-### Features
-- Django LTS
-- Function Based View
-- Django RestFramework
-- User authentication
-- Black
-- Flake8
-- Responsive Design
-- Bootstrap5
-
-
-
 ### Setup
 To get this repository, run the following command inside your git enabled terminal
 ```bash
-git clone https://github.com/alibigdeli/Django-FBV-DRF-TodoApp
+git clone https://github.com/reza72rg/Twitter
 ```
 
 ### Getting ready
@@ -121,13 +61,39 @@ A simple view of the project model schema.
 <img src="https://user-images.githubusercontent.com/29748439/134964183-595bd7cf-df01-4089-8d22-bfb765d62c18.png" alt="database schema" width="300"/>
 </p>
 
-### Todo
-- [ ] refactor javascript codes in list.html
-- [ ] leave comments for codes
-- [ ] add unit tests
-- [ ] add heroku config files
-- [ ] complete the documentation
-- [ ] create a video tutorial
+### Twitter
+- Django LTS
+- Function Based View
+- Django RestFramework
+- User authentication
+- Black
+- Flake8
+- Responsive Design
+- Bootstrap5
+
+
+## API Documentation
+
+The API documentation can be found at `http://127.0.0.1:8000/api/v1/` and `http://127.0.0.1:8000/accounts/api/v1/`, providing details on how to interact with the REST API endpoints.
+
+## Contributing
+
+Contributions are welcome! If you have any suggestions, bug reports, or feature requests, please open an issue or submit a pull request.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+## Acknowledgements
+
+- Special thanks to [Ali Bigdali] for their assistance and feedback during the development of this project.
+
+## Performance Testing
+
+Using Locust, the API tolerance threshold is created and its performance is checked by generating artificial traffic on the site. It can be tested at the address `http://127.0.0.1:8089/`.
+
 
 ### Bugs or Opinion
 Feel free to let me know if there are any problems or any request you have for this repo.
+
+
