@@ -164,3 +164,19 @@ EMAIL_PORT = 25
 EMAIL_HOST_USER = ""
 EMAIL_HOST_PASSWORD = ""
 
+# celery configs
+CELERY_BROKER_URL = "redis://redis_twitter:6379/1"  # Update the hostname to redis_todoapp
+
+
+# caching configs
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis_twitter:6379/2",  # Update the hostname to redis_todoapp
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}
+
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
