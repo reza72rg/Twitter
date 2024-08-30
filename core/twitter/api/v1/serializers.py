@@ -86,7 +86,7 @@ class LikeSerializers(serializers.ModelSerializer):
         return rep
     
     def create(self, validated_data):
-        validated_data['user'] = Profile.objects.get(user__id=self.context.get('request').user.id)
+        validated_data['user'] = self.context["request"].user.profile
         #  relation_follow = Follow.objects.filter(user=validated_data['user'], follow_user=validated_data['follow_user'])
 
         relation = Like.objects.filter(user=validated_data['user'], post=validated_data['post'])   
@@ -110,7 +110,8 @@ class DislikeSerializers(serializers.ModelSerializer):
         return rep
 
     def create(self, validated_data):
-        validated_data['user'] = Profile.objects.get(user__id=self.context.get('request').user.id)
+        # validated_data['user'] = Profile.objects.get(user__id=self.context.get('request').user.id)
+        validated_data['user'] = self.context["request"].user.profile
         relation = DisLike.objects.filter(user=validated_data['user'], post=validated_data['post'])   
         if relation.exists():
             raise ValidationError({"error": "You cannot DisLike this post again."}, code='invalid')
