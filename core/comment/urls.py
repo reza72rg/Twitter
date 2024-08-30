@@ -6,5 +6,5 @@ from comment.views import *
 app_name = "comment"
 
 urlpatterns = [
-    path("comment/api/v1/", include("comment.api.v1.urls")),
+    path("api/v1/", include("comment.api.v1.urls")),
     ]

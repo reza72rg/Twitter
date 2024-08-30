@@ -5,9 +5,11 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from blog.models import Post, Like, DisLike, Comment
+from blog.models import Post, Like, DisLike
+from comment.models import Comment
+from comment.forms import CommentForm
 from accounts.models import User, Profile, Follow
-from blog.forms import CommentForm, PostForm
+from blog.forms import PostForm
 from django.contrib import messages
 from django.urls import reverse_lazy
 # Create your views here.

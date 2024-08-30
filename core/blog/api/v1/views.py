@@ -5,10 +5,10 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
-from blog.models import Profile, Like, DisLike, Comment
+from blog.models import Profile, Like, DisLike
 from blog.models import Post, Category
 from .serializers import PostSerializers, LikeSerializers\
-    , DislikeSerializers, CommentSerializers, CategorySerializers
+    , DislikeSerializers, CategorySerializers
 from .permission import IsOwnerOrReadOnly
 from blog.api.v1.pagination import CustomPagination
 from accounts.models import Follow
@@ -50,16 +50,6 @@ class DisLikeViewSetsApiView(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user.profile
         queryset = DisLike.objects.filter(user=user)
-        return queryset
-
-    
-class CommentViewSetsApiView(viewsets.ModelViewSet):
-    serializer_class = CommentSerializers
-    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
-
-    def get_queryset(self):
-        user = self.request.user.profile
-        queryset = Comment.objects.filter(author=user, approach=True)
         return queryset
 
 
