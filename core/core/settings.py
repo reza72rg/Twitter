@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     # My apps
     "accounts.apps.AccountsConfig",
     "blog.apps.BlogConfig",
+    "comment.apps.CommentConfig",
     
     # install app
     "crispy_bootstrap4",
