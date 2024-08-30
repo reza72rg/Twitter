@@ -20,7 +20,7 @@ class CustomLoginView(LoginView):
         # Redirect to success URL if user is already authenticated
 
     def get_success_url(self):
-        return reverse_lazy('twitter:home_page')
+        return reverse_lazy('blog:home_page')
         # Redirect to the task list page after successful login
 
 
@@ -34,7 +34,7 @@ class RegisterPageView(CreateView):
 
     def get(self, *args, **kwargs):
         if self.request.user.is_authenticated:
-            return redirect("twitter:home_page")
+            return redirect("blog:home_page")
             # Redirect to the task list page if user is already authenticated
         return super(RegisterPageView, self).get(*args, **kwargs)
 
@@ -77,7 +77,7 @@ class ProfileEditView(LoginRequiredMixin, UpdateView):
     template_name = 'accounts/profile.html'
     model = Profile
     fields = ['image', 'descriptions', 'active']
-    success_url = reverse_lazy("twitter:home_page")
+    success_url = reverse_lazy("blog:home_page")
 
     def form_valid(self, form):
         value = self.request.POST['user']

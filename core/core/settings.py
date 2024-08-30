@@ -19,7 +19,6 @@ DEBUG = env.bool("DEBUG", default=False)  # Handle DEBUG appropriately
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
 
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -31,14 +30,13 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # My apps
     "accounts.apps.AccountsConfig",
-    "twitter.apps.TwitterConfig",
+    "blog.apps.BlogConfig",
     
     # install app
     "crispy_bootstrap4",
     "crispy_forms",
     'mail_templated',
-    #'django_cleanup.apps.CleanupConfig',
-    
+
     # rest framework
     'rest_framework',
     'rest_framework.authtoken',
@@ -151,8 +149,10 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
 
-    ]
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'blog.api.v1.pagination.CustomPagination',
 }
+
 
 
 # Email Verify
@@ -164,7 +164,10 @@ EMAIL_PORT = 25
 EMAIL_HOST_USER = ""
 EMAIL_HOST_PASSWORD = ""
 
-# celery configs
+
+LOGOUT_REDIRECT_URL = '/'  # Redirect to the homepage after logout
+
+'''# celery configs
 CELERY_BROKER_URL = "redis://redis_twitter:6379/1"  # Update the hostname to redis_todoapp
 
 
@@ -180,3 +183,4 @@ CACHES = {
 }
 
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+'''

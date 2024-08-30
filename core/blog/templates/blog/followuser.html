@@ -4,7 +4,7 @@
 
 	<div class="container">
 		<div class="form-group">
-				<form action="{% url 'twitter:follow' %}" method="post">{% csrf_token %}
+				<form action="{% url 'blog:follow' %}" method="post">{% csrf_token %}
                 <div style="width: 100%" class="search-container">
                     <div class="search">
                     <input required name="search" type="text" id="zip-code-input" placeholder="Search User">
@@ -23,7 +23,7 @@
                                                class="rounded-circle mr-2"
                                                style="width: 40px; height: 40px;"
                                                src="{{ result.image.url }}">
-                                           <a class="mr-2 white-important" href="{% url 'twitter:user-follows' result.user_id %}">
+                                           <a class="mr-2 white-important" href="{% url 'blog:user-follows' result.user_id %}">
                                                {{ result.user }}
                                            </a>
                                        </div>

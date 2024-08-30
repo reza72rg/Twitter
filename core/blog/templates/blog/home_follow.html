@@ -3,7 +3,7 @@
 {% block content %}
     <div class="row">
         <div class="col-12 col-md-3 pr-4 dont-move">
-            <a href="/"> <h2><img class="img-fluid" width="60" src="{% static 'twitter/logo.png' %}">BlogRoom</h2></a><br>
+            <a href="/"> <h2><img class="img-fluid" width="60" src="{% static 'blog/logo.png' %}">BlogRoom</h2></a><br>
             <div class="profile-section">
             <h3 class="white-important p-2">
                 Profile
@@ -40,13 +40,13 @@
                     </div>
                         <div class="col-6">
                             <h3 class="white-important follow-click">
-                                <a href="{% url 'twitter:user-followers' user.id 'followers' %}">
+                                <a href="{% url 'blog:user-followers' user.id 'followers' %}">
                                     {{ user.user.profile.followers }}
                                 </a>
                             </h3>
                         </div>
                          <div class="col-6">
-                            <a href="{% url 'twitter:user-followers' user.id 'following' %}">
+                            <a href="{% url 'blog:user-followers' user.id 'following' %}">
                                 <h3 class="white-important follow-click">
                                     {{ user.user.profile.following }}
                                 </h3>
@@ -105,7 +105,7 @@
                                class="rounded-circle mr-2"
                                style="width: 20px; height: 20px;"
                                src="{{ post.author.image.url }}">
-                           <a class="mr-2 white-important" href="{% url 'twitter:user-follows' post.author.id %}">
+                           <a class="mr-2 white-important" href="{% url 'blog:user-follows' post.author.id %}">
                                {{ post.author }}
                            </a>
                        </div>
@@ -114,10 +114,10 @@
                            {% if post.author == request.user %}
                                 <a class="material-icons ml-2"
                                    style="font-size: 14px"
-                                        href="{% url 'twitter:delete' post.id %}">clear</a>
+                                        href="{% url 'blog:delete' post.id %}">clear</a>
                                 <a class="material-icons ml-2"
                                    style="font-size: 14px"
-                                        href="{% url 'twitter:update_post' post.id %}">update</a>
+                                        href="{% url 'blog:update_post' post.id %}">update</a>
                             {%  endif %}
                        </div>
                    </div>
@@ -126,7 +126,7 @@
                             style="width: 100%; height: 1px; background-color: rgba(255, 255, 255, 0.1)"></div>
                     <a
                             style="color: rgba(255, 255, 255, 0.5) !important;"
-                            href="{% url 'twitter:details_post' post.id %}">
+                            href="{% url 'blog:details_post' post.id %}">
                         <p class="mb-4">
                             {{ post.content }}
                         </p>
@@ -137,7 +137,7 @@
                                 <small style="opacity: 0.4;">
 
                                     <!-- Like Buttons Here -->
-                                    <a href="{% url 'twitter:like-post' post.id %}" onClick="document.getElementById('likebutton').submit()"><i class="fas fa-thumbs-up"></i></a> {{post.likes}}   |   <a href="{% url 'twitter:dislike-post' post.id %}" onClick="document.getElementById('dislikebutton').submit()"><i class="fas fa-thumbs-down"></i></a> {{post.dislikes}}
+                                    <a href="{% url 'blog:like-post' post.id %}" onClick="document.getElementById('likebutton').submit()"><i class="fas fa-thumbs-up"></i></a> {{post.likes}}   |   <a href="{% url 'blog:dislike-post' post.id %}" onClick="document.getElementById('dislikebutton').submit()"><i class="fas fa-thumbs-down"></i></a> {{post.dislikes}}
 
 
                                     <form id="likebutton" method="POST" action="">
@@ -153,7 +153,7 @@
 
                                 </small>
                                 <small style="opacity: 0.4; margin-left:15px;">
-                                    <a href="{% url 'twitter:details_post' post.id %}">
+                                    <a href="{% url 'blog:details_post' post.id %}">
                                         <i style=" font-size: 16px;" class="far fa-comment"></i> {{ post.number_of_comments }} comment(s)
                                     </a>
 
@@ -201,17 +201,17 @@
             </div>
         </div>
         <div class="col-12 col-md-3 dont-move">
-            <form action="{% url 'twitter:search' %}" method="post">{% csrf_token %}
+            <form action="{% url 'blog:search' %}" method="post">{% csrf_token %}
                 <div class="search-container">
                     <div class="search">
-                    <input required name="search" type="text" id="zip-code-input" placeholder="Search Twitter">
+                    <input required name="search" type="text" id="zip-code-input" placeholder="Search blog">
                     <button type="submit" style="border:0; background: transparent;"><i class="fa fa-search"></i> </button> </a>
                 </form>
               </div>
             </div>
             <h3 class="white-important mb-3 mt-4"> Trends </h3>
 
-            <form action="{% url 'twitter:follow' %}" method="post">{% csrf_token %}
+            <form action="{% url 'blog:follow' %}" method="post">{% csrf_token %}
                 <article class="t-section media content-section">
                     <div class="row ">
                         <div class="col-12">

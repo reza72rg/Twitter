@@ -1,5 +1,5 @@
 from django.contrib import admin
-from twitter.models import Post, Like, DisLike, Comment, Category
+from blog.models import Post, Like, DisLike, Comment, Category
 # Register your models here.
 
 

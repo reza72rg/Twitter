@@ -5,16 +5,16 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from twitter.models import Post, Like, DisLike, Comment
+from blog.models import Post, Like, DisLike, Comment
 from accounts.models import User, Profile, Follow
-from twitter.forms import CommentForm, PostForm
+from blog.forms import CommentForm, PostForm
 from django.contrib import messages
 from django.urls import reverse_lazy
 # Create your views here.
 
 
 class PostListView(LoginRequiredMixin, ListView):
-    template_name = 'twitter/home.html'
+    template_name = 'blog/home.html'
     ordering = ['-created_date']
     context_object_name = 'posts'
     paginate_by = 3
@@ -39,14 +39,14 @@ class PostListView(LoginRequiredMixin, ListView):
 
 
 class Aboutpage(LoginRequiredMixin, View):
-    template_name = 'twitter/about.html'
+    template_name = 'blog/about.html'
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
 
 
 class UserFollowListView(LoginRequiredMixin, ListView):
-    template_name = 'twitter/home_follow.html'
+    template_name = 'blog/home_follow.html'
     ordering = ['-created_date']
     context_object_name = 'posts'
     paginate_by = 3
@@ -69,7 +69,7 @@ class UserFollowListView(LoginRequiredMixin, ListView):
             self.relation.delete()
         else:
             Follow(user=request.user.profile, follow_user=self.user).save()
-        return redirect('twitter:user-follows', self.user.id)
+        return redirect('blog:user-follows', self.user.id)
 
     def get_queryset(self):
         return self.posts
@@ -82,7 +82,7 @@ class UserFollowListView(LoginRequiredMixin, ListView):
    
 
 class FollowersView(LoginRequiredMixin, View):
-    template_name = 'twitter/follow.html'
+    template_name = 'blog/follow.html'
 
     def dispatch(self, request, *args, **kwargs):
         self.follow = kwargs['letter']
@@ -101,9 +101,9 @@ class FollowersView(LoginRequiredMixin, View):
 class UserCreatePostView(LoginRequiredMixin, CreateView):
     model = Post
     form_class = PostForm
-    template_name = 'twitter/post_new.html'
+    template_name = 'blog/post_new.html'
     # fields = ["content", "image"]
-    success_url = reverse_lazy("twitter:home_page")
+    success_url = reverse_lazy("blog:home_page")
 
     def form_valid(self, form):
         form.instance.author_id = self.request.user.id
@@ -112,16 +112,16 @@ class UserCreatePostView(LoginRequiredMixin, CreateView):
 
 class DeletePostView(LoginRequiredMixin, DeleteView):
     model = Post
-    template_name = 'twitter/post_delete.html'
+    template_name = 'blog/post_delete.html'
     context_object_name = "post"
-    success_url = reverse_lazy("twitter:home_page")
+    success_url = reverse_lazy("blog:home_page")
 
 
 class UpdatePostView(LoginRequiredMixin, UpdateView):
     model = Post
     form_class = PostForm
-    template_name = 'twitter/post_new.html'
-    success_url = reverse_lazy("twitter:home_page")
+    template_name = 'blog/post_new.html'
+    success_url = reverse_lazy("blog:home_page")
 
     def form_valid(self, form):
         return super().form_valid(form)
@@ -129,7 +129,7 @@ class UpdatePostView(LoginRequiredMixin, UpdateView):
 
 '''class DetailsPostView(LoginRequiredMixin, DetailView):
     model = Post
-    template_name = 'twitter/post_detail.html'
+    template_name = 'blog/post_detail.html'
     form_class = CommentForm()
     def dispatch(self, request, *args, **kwargs):
         self.pk =kwargs['pk']
@@ -147,7 +147,7 @@ class UpdatePostView(LoginRequiredMixin, UpdateView):
 
 
 class DetailsPostView(LoginRequiredMixin, View):
-    template_name = 'twitter/post_detail.html'
+    template_name = 'blog/post_detail.html'
     form_class = CommentForm
 
     def dispatch(self, request, *args, **kwargs):
@@ -170,11 +170,11 @@ class DetailsPostView(LoginRequiredMixin, View):
             endcomment.post = self.posts
             endcomment.author = request.user.profile
             endcomment.save()
-        return redirect('twitter:details_post', self.posts.pk)
+        return redirect('blog:details_post', self.posts.pk)
 
 
 class FollowUserView(View):
-    template_name = 'twitter/followuser.html'
+    template_name = 'blog/followuser.html'
 
     def post(self, request, *args, **kwargs):
         q = request.POST.get('search')

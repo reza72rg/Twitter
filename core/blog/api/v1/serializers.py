@@ -1,8 +1,8 @@
 from django.db.models import Q
-from twitter.models import Post
+from blog.models import Post
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from twitter.models import Profile, Like, DisLike, Comment, Category
+from blog.models import Profile, Like, DisLike, Comment, Category
 from accounts.api.v1.serializers import UserTestSerializers
 from rest_framework.exceptions import ValidationError
 from accounts.models import Follow

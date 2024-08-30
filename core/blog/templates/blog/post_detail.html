@@ -13,16 +13,16 @@
                         src="{{ post.author.image.url }}"
                         alt="{{ post.author }}"
                         style="width: 20px; height: 20px;">
-                    <a href="{% url 'twitter:user-follows' post.author.id %}" class="mr-2 white-important">
+                    <a href="{% url 'blog:user-follows' post.author.id %}" class="mr-2 white-important">
                         {{ post.author }}
                     </a>
                 </div>
                 <div class="col-4 d-flex flex-row-reverse align-items-center no-padding" style="padding-right: 0;">
                     {% if post.author == user %}
-                        <a href="{% url 'twitter:delete' post.id %}" class="material-icons ml-2" style="font-size: 14px;">
+                        <a href="{% url 'blog:delete' post.id %}" class="material-icons ml-2" style="font-size: 14px;">
                             clear
                         </a>
-                        <a href="{% url 'twitter:update_post' post.id %}" class="material-icons ml-2" style="font-size: 14px;">
+                        <a href="{% url 'blog:update_post' post.id %}" class="material-icons ml-2" style="font-size: 14px;">
                             update
                         </a>
                     {% endif %}

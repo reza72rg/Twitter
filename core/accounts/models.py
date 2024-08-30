@@ -6,7 +6,6 @@ from core.tools import UploadToPathAndRename
 from .setting import MainModel
 
 
-
 # Profile Model
 class Profile(MainModel):
     user = models.OneToOneField(
