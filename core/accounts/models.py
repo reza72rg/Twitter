@@ -14,7 +14,7 @@ class Profile(MainModel):
     )  # Foreign key relation with User model
     first_name = models.CharField(max_length=250, blank=True, null=True)  # First name of the user
     last_name = models.CharField(max_length=250, blank=True, null=True)  # Last name of the user
-    image = models.ImageField(upload_to=UploadToPathAndRename("profile"),default='profile/default.jpg'
+    image = models.ImageField(upload_to=UploadToPathAndRename("profile"), default='profile/default.jpg'
     )  # Image field for user profile picture
     descriptions = (
         models.TextField(blank=True, null=True)

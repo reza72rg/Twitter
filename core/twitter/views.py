@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from twitter.models import Post, Like, DisLike, Comment
 from accounts.models import User, Profile, Follow
-from twitter.forms import CommentForm
+from twitter.forms import CommentForm, PostForm
 from django.contrib import messages
 from django.urls import reverse_lazy
 # Create your views here.
@@ -100,8 +100,9 @@ class FollowersView(LoginRequiredMixin, View):
 
 class UserCreatePostView(LoginRequiredMixin, CreateView):
     model = Post
+    form_class = PostForm
     template_name = 'twitter/post_new.html'
-    fields = ["content", "image"]
+    # fields = ["content", "image"]
     success_url = reverse_lazy("twitter:home_page")
 
     def form_valid(self, form):
@@ -118,11 +119,12 @@ class DeletePostView(LoginRequiredMixin, DeleteView):
 
 class UpdatePostView(LoginRequiredMixin, UpdateView):
     model = Post
-    fields = ["content", "image"]
+    form_class = PostForm
+    template_name = 'twitter/post_new.html'
     success_url = reverse_lazy("twitter:home_page")
 
     def form_valid(self, form):
-        return super(UpdatePostView, self).form_valid(form)
+        return super().form_valid(form)
 
 
 '''class DetailsPostView(LoginRequiredMixin, DetailView):

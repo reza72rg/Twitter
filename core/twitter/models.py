@@ -1,6 +1,6 @@
 from django.db import models
 from django.urls import reverse
-from accounts.models import  Profile
+from accounts.models import Profile
 from core.tools import UploadToPathAndRename
 from accounts.models import MainModel
 
@@ -70,7 +70,7 @@ class Comment(models.Model):
 
 
 class ImageFiled(MainModel):
-    post = models.ForeignKey(Post,on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
     image = models.ImageField(upload_to=UploadToPathAndRename("posts"), default='posts/default.jpg')
 
     def __str__(self):
