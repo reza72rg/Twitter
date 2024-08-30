@@ -1,3 +1,4 @@
+from django.db.models import Q
 from twitter.models import Post
 from rest_framework import serializers
 from django.contrib.auth.models import User
@@ -14,7 +15,7 @@ class CommentSerializers(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ['id', 'post', 'content', 'snippet', 'relative_url', 'absolute_url', 'approach', 'author']
+        fields = ['id', 'post', 'content', 'snippet', 'relative_url', 'absolute_url', 'author']
         read_only_fields = ['author']
 
     def to_representation(self, instance):
@@ -30,7 +31,16 @@ class CommentSerializers(serializers.ModelSerializer):
         return rep
 
     def create(self, validated_data):
-        validated_data['author'] = Profile.objects.get(user__id=self.context.get('request').user.id)
+        user  = self.context["request"].user.profile
+        validated_data['author'] = user
+        validated_data['approach'] = False
+
+        if not Post.objects.filter(
+                (Q(author__in=Follow.objects.filter(user=user).values_list('follow_user', flat=True)) | Q(
+                    author=user)) &
+                Q(id=validated_data['post'].id) & Q(archive=True)
+        ).exists():
+            raise ValidationError({"error": "You do not have permission to comments on this post."}, code='invalid')
         return super().create(validated_data)
 
     def get_absolute_url(self, obj):
@@ -86,8 +96,17 @@ class LikeSerializers(serializers.ModelSerializer):
         return rep
     
     def create(self, validated_data):
-        validated_data['user'] = self.context["request"].user.profile
+        user = self.context["request"].user.profile
+        validated_data['user'] = user
         #  relation_follow = Follow.objects.filter(user=validated_data['user'], follow_user=validated_data['follow_user'])
+
+        # Ensure the user is liking a post they have permission to like
+        if not Post.objects.filter(
+                (Q(author__in=Follow.objects.filter(user=user).values_list('follow_user', flat=True)) | Q(
+                    author=user)) &
+                Q(id=validated_data['post'].id) & Q(archive=True)
+        ).exists():
+            raise ValidationError({"error": "You do not have permission to like this post."}, code='invalid')
 
         relation = Like.objects.filter(user=validated_data['user'], post=validated_data['post'])   
         # if relation_follow.exists():
@@ -111,8 +130,16 @@ class DislikeSerializers(serializers.ModelSerializer):
 
     def create(self, validated_data):
         # validated_data['user'] = Profile.objects.get(user__id=self.context.get('request').user.id)
-        validated_data['user'] = self.context["request"].user.profile
-        relation = DisLike.objects.filter(user=validated_data['user'], post=validated_data['post'])   
+        user = self.context["request"].user.profile
+        validated_data['user'] = user
+        if not Post.objects.filter(
+                (Q(author__in=Follow.objects.filter(user=user).values_list('follow_user', flat=True)) | Q(
+                    author=user)) &
+                Q(id=validated_data['post'].id) & Q(archive=True)
+        ).exists():
+            raise ValidationError({"error": "You do not have permission to Dislike this post."}, code='invalid')
+
+        relation = DisLike.objects.filter(user=user, post=validated_data['post'])
         if relation.exists():
             raise ValidationError({"error": "You cannot DisLike this post again."}, code='invalid')
         return super().create(validated_data)

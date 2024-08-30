@@ -34,17 +34,30 @@ class PostViewSetsApiView(viewsets.ModelViewSet):
 
 
 class LikeViewSetsApiView(viewsets.ModelViewSet):
-    queryset = Like.objects.all()
-    serializer_class = LikeSerializers 
+    serializer_class = LikeSerializers
+
+    def get_queryset(self):
+        user = self.request.user.profile
+        queryset = Like.objects.filter(user=user)
+        return queryset
     
 
 class DisLikeViewSetsApiView(viewsets.ModelViewSet):
-    queryset = DisLike.objects.all()
-    serializer_class = DislikeSerializers    
-    
+    serializer_class = DislikeSerializers
+
+    def get_queryset(self):
+        user = self.request.user.profile
+        queryset = DisLike.objects.filter(user=user)
+        return queryset
+
     
 class CommentViewSetsApiView(viewsets.ModelViewSet):
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializers    
+    serializer_class = CommentSerializers
+
+    def get_queryset(self):
+        user = self.request.user.profile
+        queryset = Comment.objects.filter(author=user, approach=True)
+        return queryset
+
     
                          
