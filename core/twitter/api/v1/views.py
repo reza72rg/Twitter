@@ -15,7 +15,7 @@ from accounts.models import Follow
 # Create your views here.
 
 
-class  PostViewsetsApiView(viewsets.ModelViewSet):
+class PostViewsetsApiView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     #queryset = Post.objects.order_by('created_date').all()
     serializer_class = PostSerializers
@@ -23,7 +23,8 @@ class  PostViewsetsApiView(viewsets.ModelViewSet):
     filterset_fields = ['author', 'archive']
     search_fields = ['content']
     ordering_fields = ['created_date']
-    pagination_class  = CustomPagination
+    pagination_class = CustomPagination
+
     def get_queryset(self):
         user_follow = Follow.objects.filter(user=self.request.user.profile).values_list('follow_user', flat=True)
         queryset = Post.objects.filter(author__in=user_follow, archive=True) | Post.objects.filter(author=self.request.user.profile, archive=True)
@@ -32,20 +33,17 @@ class  PostViewsetsApiView(viewsets.ModelViewSet):
     #     return (super().get_queryset(*args, **kwargs).filter(author=self.request.user.profile))
 
 
-
-
-class  LikeViewsetsApiView(viewsets.ModelViewSet):
+class LikeViewsetsApiView(viewsets.ModelViewSet):
     queryset = Like.objects.all()
     serializer_class = LikeSerializers 
     
-   
-    
-class  DisLikeViewsetsApiView(viewsets.ModelViewSet):
+
+class DisLikeViewsetsApiView(viewsets.ModelViewSet):
     queryset = DisLike.objects.all()
     serializer_class = DislikeSerializers    
     
     
-class  CommentViewsetsApiView(viewsets.ModelViewSet):
+class CommentViewsetsApiView(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializers    
     
