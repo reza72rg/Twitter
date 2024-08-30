@@ -15,9 +15,9 @@ from accounts.models import Follow
 # Create your views here.
 
 
-class PostViewsetsApiView(viewsets.ModelViewSet):
+class PostViewSetsApiView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
-    #queryset = Post.objects.order_by('created_date').all()
+    # queryset = Post.objects.order_by('created_date').all()
     serializer_class = PostSerializers
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ['author', 'archive']
@@ -33,17 +33,17 @@ class PostViewsetsApiView(viewsets.ModelViewSet):
     #     return (super().get_queryset(*args, **kwargs).filter(author=self.request.user.profile))
 
 
-class LikeViewsetsApiView(viewsets.ModelViewSet):
+class LikeViewSetsApiView(viewsets.ModelViewSet):
     queryset = Like.objects.all()
     serializer_class = LikeSerializers 
     
 
-class DisLikeViewsetsApiView(viewsets.ModelViewSet):
+class DisLikeViewSetsApiView(viewsets.ModelViewSet):
     queryset = DisLike.objects.all()
     serializer_class = DislikeSerializers    
     
     
-class CommentViewsetsApiView(viewsets.ModelViewSet):
+class CommentViewSetsApiView(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializers    
     

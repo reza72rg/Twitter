@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from accounts.models import Follow
-from .serializers import FollowersSerializers, ProfileSerializers, Registerserializer\
+from .serializers import FollowersSerializers, ProfileSerializers, RegisterSerializer\
     ,CustomTokenSerializer, CustomAuthTokenSerializer, ChangePasswordSerializer\
         ,LoginSerializer , ActivateResendSerializer, ResetPasswordserializer\
             ,ResetPasswordConfirmserializer
@@ -24,53 +24,61 @@ from ..utils import EmailThread
 import jwt
 from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
-   
-class  FollowersViewsetsApiView(viewsets.ModelViewSet):
+
+
+class FollowersViewSetsApiView(viewsets.ModelViewSet):
     # queryset = Follow.objects.all()
-    serializer_class = FollowersSerializers  
+    serializer_class = FollowersSerializers
+
     def get_queryset(self):
         queryset = Follow.objects.filter(user=self.request.user.profile) 
-        return queryset  
-class  FollowingViewsetsApiView(generics.ListAPIView):
-    serializer_class = FollowersSerializers 
+        return queryset
+
+
+class FollowingViewSetsApiView(generics.ListAPIView):
+    serializer_class = FollowersSerializers
+
     def get_queryset(self):
-        queryset = Follow.objects.filter(follow_user = self.request.user.profile)
+        queryset = Follow.objects.filter(follow_user=self.request.user.profile)
         return queryset     
-                     
-class  ProfileViewsetsApiView(generics.RetrieveUpdateAPIView):
+
+
+class ProfileViewSetsApiView(generics.RetrieveUpdateAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializers
+
     def get_object(self):
         queryset = self.get_queryset()
-        obj = get_object_or_404(queryset, user = self.request.user)
+        obj = get_object_or_404(queryset, user=self.request.user)
         return obj
     
     
-class RegisterViewsetsApiView(generics.GenericAPIView):
-    serializer_class = Registerserializer
-    def post(self,request,*args,**kwargs):
-        serializer = Registerserializer(data = request.data)
+class RegisterViewSetsApiView(generics.GenericAPIView):
+    serializer_class = RegisterSerializer
+
+    def post(self, request ,*args, **kwargs):
+        serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             user_name = serializer.validated_data['username']
             data = {
                 'username': user_name
             }
-            user_obj = get_object_or_404(User, username = user_name)
+            user_obj = get_object_or_404(User, username=user_name)
             token = self.get_tokens_for_user(user_obj)
             email_obj = EmailMessage('email/activation.tpl', {'token': token}, 'reza72rg@gmail.com',to=['test.@gmail.com'])
             EmailThread(email_obj).start()
             return Response(data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
-    
+
     def get_tokens_for_user(self, user):
             refresh = RefreshToken.for_user(user)
             return str(refresh.access_token)
 
 
-
 class CustomLoginAuthToken(ObtainAuthToken):
     serializer_class = CustomTokenSerializer
+
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data,
                                            context={'request': request})
@@ -90,15 +98,13 @@ class CustomLogoutAuthToken(APIView):
     def post(self, request):
         request.user.auth_token.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-        
-        
+
         
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomAuthTokenSerializer
     
     
-    
-class ChangePasswordViewsetsApiView(generics.GenericAPIView):
+class ChangePasswordViewSetsApiView(generics.GenericAPIView):
     serializer_class = ChangePasswordSerializer
     model = User
     permission_classes = (IsAuthenticated,)
@@ -159,9 +165,6 @@ class TestEmail(generics.GenericAPIView):
         return str(refresh.access_token)
 
 
-
-
-
 class ActivationApiView(APIView):
     def get(self, request,token, *args, **kwargs):
         try:
@@ -191,8 +194,10 @@ class ActivationApiView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+
 class ActivationResendApiView(generics.GenericAPIView):
     serializer_class = ActivateResendSerializer
+
     def post(self, request, *args, **kwargs):
         serializer = ActivateResendSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -217,6 +222,7 @@ class ActivationResendApiView(generics.GenericAPIView):
     
 class ResetPasswordApiView(generics.GenericAPIView):
     serializer_class = ResetPasswordserializer
+
     def post(self, request, *args, **kwargs):
         serializer = ResetPasswordserializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -241,6 +247,7 @@ class ResetPasswordApiView(generics.GenericAPIView):
     
 class ResetPasswordConfirmApiView(APIView):
     serializer_class = ResetPasswordConfirmserializer
+
     def put(self, request,token, *args, **kwargs):
         try:
             token = jwt.decode(token, key=settings.SECRET_KEY, algorithms=["HS256"])

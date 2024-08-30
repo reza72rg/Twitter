@@ -48,7 +48,7 @@ class PostSerializers(serializers.ModelSerializer):
     
     class Meta:
         model = Post
-        fields = ['id', 'content', 'snippet','relative_url','absolute_url', 'archive','author']
+        fields = ['id', 'content', 'image', 'snippet', 'relative_url', 'absolute_url', 'archive', 'author']
         read_only_fields = ['author']
    
     def get_absolute_url(self, obj):
@@ -86,43 +86,31 @@ class LikeSerializers(serializers.ModelSerializer):
         return rep
     
     def create(self, validated_data):
-        validated_data['user'] = Profile.objects.get(user__id = self.context.get('request').user.id)
-        print('validated_data=', validated_data)
-        # relation_follow = Follow.objects.filter(user=validated_data['user'], follow_user=validated_data['follow_user'])   
+        validated_data['user'] = Profile.objects.get(user__id=self.context.get('request').user.id)
+        #  relation_follow = Follow.objects.filter(user=validated_data['user'], follow_user=validated_data['follow_user'])
+
         relation = Like.objects.filter(user=validated_data['user'], post=validated_data['post'])   
         # if relation_follow.exists():
         #     raise ValidationError({"error": "You cannot Like this post because you follow user."}, code='invalid')
         if relation.exists():
             raise ValidationError({"error": "You cannot Like this post again."}, code='invalid')
         return super().create(validated_data)
-    
-    
-    
-    
-
-    
-    
-    
-    
-
-
-
-
-
 
 
 class DislikeSerializers(serializers.ModelSerializer):
     class Meta:
         model = DisLike
-        fields = ['id', 'post','user']
+        fields = ['id', 'post', 'user']
         read_only_fields = ['user']
+
     def to_representation(self, instance):
         rep = super().to_representation(instance)
         rep["user"] = UserTestSerializers(
             instance.user).data
         return rep
+
     def create(self, validated_data):
-        validated_data['user'] = Profile.objects.get(user__id = self.context.get('request').user.id)
+        validated_data['user'] = Profile.objects.get(user__id=self.context.get('request').user.id)
         relation = DisLike.objects.filter(user=validated_data['user'], post=validated_data['post'])   
         if relation.exists():
             raise ValidationError({"error": "You cannot DisLike this post again."}, code='invalid')
