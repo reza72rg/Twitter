@@ -20,7 +20,7 @@ class PostViewSetsApiView(viewsets.ModelViewSet):
     # queryset = Post.objects.order_by('created_date').all()
     serializer_class = PostSerializers
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['author', 'archive']
+    filterset_fields = ['author', 'category']
     search_fields = ['content']
     ordering_fields = ['created_date']
     pagination_class = CustomPagination

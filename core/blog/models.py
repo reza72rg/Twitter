@@ -40,7 +40,7 @@ class Post(MainModel):
         return self.content[0:5]
 
     def get_absolute_url(self):
-        return reverse('twitter:api-v1:task-detail', kwargs={'pk': self.pk})
+        return reverse('blog:api-v1:task-detail', kwargs={'pk': self.pk})
 
 
 class Like(models.Model):
@@ -74,7 +74,7 @@ class Comment(models.Model):
         return self.content[0:5]
 
     def get_absolute_url(self):
-        return reverse('twitter:api-v1:comment-detail', kwargs={'pk': self.pk})
+        return reverse('blog:api-v1:comment-detail', kwargs={'pk': self.pk})
 
 
 class ImageFiled(MainModel):
