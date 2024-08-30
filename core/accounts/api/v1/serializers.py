@@ -79,7 +79,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 class FollowersSerializers(serializers.ModelSerializer):
     class Meta:
         model = Follow
-        fields = ['id', 'user', 'follow_user', 'date']
+        fields = ['id', 'user', 'follow_user']
         read_only_fields = ['user']
        
     def to_representation(self, instance):

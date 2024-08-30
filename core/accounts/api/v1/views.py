@@ -29,6 +29,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 class FollowersViewSetsApiView(viewsets.ModelViewSet):
     # queryset = Follow.objects.all()
     serializer_class = FollowersSerializers
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = Follow.objects.filter(user=self.request.user.profile) 
@@ -137,6 +138,8 @@ class ChangePasswordViewSetsApiView(generics.GenericAPIView):
     
     
 class LoginApiView(APIView):
+
+    serializer_class = LoginSerializer
     def post(self, request, *args, **kwargs):
         """
         Login view to get user credentials

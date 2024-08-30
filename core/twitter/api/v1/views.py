@@ -35,6 +35,7 @@ class PostViewSetsApiView(viewsets.ModelViewSet):
 
 class LikeViewSetsApiView(viewsets.ModelViewSet):
     serializer_class = LikeSerializers
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 
     def get_queryset(self):
         user = self.request.user.profile
@@ -44,6 +45,7 @@ class LikeViewSetsApiView(viewsets.ModelViewSet):
 
 class DisLikeViewSetsApiView(viewsets.ModelViewSet):
     serializer_class = DislikeSerializers
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 
     def get_queryset(self):
         user = self.request.user.profile
@@ -53,6 +55,7 @@ class DisLikeViewSetsApiView(viewsets.ModelViewSet):
     
 class CommentViewSetsApiView(viewsets.ModelViewSet):
     serializer_class = CommentSerializers
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 
     def get_queryset(self):
         user = self.request.user.profile
