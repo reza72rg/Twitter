@@ -2,7 +2,7 @@ from django.db.models import Q
 from twitter.models import Post
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from twitter.models import Profile, Like, DisLike, Comment
+from twitter.models import Profile, Like, DisLike, Comment, Category
 from accounts.api.v1.serializers import UserTestSerializers
 from rest_framework.exceptions import ValidationError
 from accounts.models import Follow
@@ -31,7 +31,7 @@ class CommentSerializers(serializers.ModelSerializer):
         return rep
 
     def create(self, validated_data):
-        user  = self.context["request"].user.profile
+        user = self.context["request"].user.profile
         validated_data['author'] = user
         validated_data['approach'] = False
 
@@ -52,13 +52,14 @@ class PostSerializers(serializers.ModelSerializer):
     snippet = serializers.CharField(source='get_snippet', read_only=True)
     relative_url = serializers.URLField(source='get_absolute_url', read_only=True)
     absolute_url = serializers.SerializerMethodField()
+    category = serializers.SlugRelatedField(slug_field='name', queryset=Category.objects.all())
     # author = serializers.SlugRelatedField(
     #     many=False, slug_field="user.username", queryset=Profile.objects.all()
     # )
     
     class Meta:
         model = Post
-        fields = ['id', 'content', 'image', 'snippet', 'relative_url', 'absolute_url', 'archive', 'author']
+        fields = ['id', 'content', 'image', 'category', 'snippet', 'relative_url', 'absolute_url', 'archive', 'author']
         read_only_fields = ['author']
    
     def get_absolute_url(self, obj):
@@ -143,3 +144,9 @@ class DislikeSerializers(serializers.ModelSerializer):
         if relation.exists():
             raise ValidationError({"error": "You cannot DisLike this post again."}, code='invalid')
         return super().create(validated_data)
+
+
+class CategorySerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id', 'name']

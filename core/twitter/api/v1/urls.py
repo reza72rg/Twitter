@@ -5,6 +5,7 @@ from .views import (
     LikeViewSetsApiView,
     DisLikeViewSetsApiView,
     CommentViewSetsApiView,
+    CategoryViewSetsApiView,
     
     )
 app_name = "api-v1"
@@ -14,6 +15,7 @@ router.register("task", PostViewSetsApiView, basename="task")
 router.register("like", LikeViewSetsApiView, basename="like")
 router.register("dislike", DisLikeViewSetsApiView, basename="dislike")
 router.register("comment", CommentViewSetsApiView, basename="comment")
+router.register("category", CategoryViewSetsApiView, basename="category")
 
 urlpatterns = router.urls
 

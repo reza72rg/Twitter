@@ -6,9 +6,9 @@ from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from twitter.models import Profile, Like, DisLike, Comment
-from twitter.models import Post
+from twitter.models import Post, Category
 from .serializers import PostSerializers, LikeSerializers\
-    , DislikeSerializers, CommentSerializers
+    , DislikeSerializers, CommentSerializers, CategorySerializers
 from .permission import IsOwnerOrReadOnly
 from twitter.api.v1.pagination import CustomPagination
 from accounts.models import Follow
@@ -62,5 +62,8 @@ class CommentViewSetsApiView(viewsets.ModelViewSet):
         queryset = Comment.objects.filter(author=user, approach=True)
         return queryset
 
-    
-                         
+
+class CategoryViewSetsApiView(viewsets.ModelViewSet):
+    serializer_class = CategorySerializers
+    permission_classes = [IsAuthenticated]
+    queryset = Category.objects.all()
