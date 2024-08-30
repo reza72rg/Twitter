@@ -22,7 +22,7 @@ class PostListView(LoginRequiredMixin, ListView):
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             self.user_follow = Follow.objects.filter(user=request.user.profile).values_list('follow_user', flat=True)
-            self.posts = Post.objects.filter(author__in=self.user_follow,archive=True) | Post.objects.filter(author=request.user.profile,archive=True)
+            self.posts = Post.objects.filter(author__in=self.user_follow, archive=True) | Post.objects.filter(author=request.user.profile, archive=True)
         else:
             self.posts = Post.objects.none()  # Empty queryset if user is not authenticated
         
@@ -36,19 +36,13 @@ class PostListView(LoginRequiredMixin, ListView):
         posts = self.posts.filter(content__icontains=q)
         context = {'posts': posts}
         return render(request, self.template_name, context)
-    
 
-    
-        
 
-class Aboutpage(LoginRequiredMixin,View):
+class Aboutpage(LoginRequiredMixin, View):
     template_name = 'twitter/about.html'
+
     def get(self, request, *args, **kwargs):
-        return render (request , self.template_name)
-
-
-
-
+        return render(request, self.template_name)
 
 
 class UserFollowListView(LoginRequiredMixin, ListView):
@@ -65,7 +59,7 @@ class UserFollowListView(LoginRequiredMixin, ListView):
             self.can_follow = True
             if self.relation.exists() or self.user == self.request.user.profile:
                 self.can_follow = False
-                self.posts = Post.objects.filter(author= self.user,archive=True).order_by('-created_date')
+                self.posts = Post.objects.filter(author=self.user, archive=True).order_by('-created_date')
         else:
             return redirect('/')
         return super().dispatch(request, *args, **kwargs)
@@ -76,31 +70,25 @@ class UserFollowListView(LoginRequiredMixin, ListView):
         else:
             Follow(user=request.user.profile, follow_user=self.user).save()
         return redirect('twitter:user-follows', self.user.id)
+
     def get_queryset(self):
         return self.posts
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context ['user'] = self.user
-        context ["can_follow"] = self.can_follow
+        context['user'] = self.user
+        context["can_follow"]= self.can_follow
         return context
-   
-   
-   
-   
-   
-   
-   
    
 
 class FollowersView(LoginRequiredMixin, View):
     template_name = 'twitter/follow.html'
+
     def dispatch(self, request, *args, **kwargs):
-        self.follow =kwargs['letter']
+        self.follow = kwargs['letter']
         self.user = Profile.objects.get(user_id=kwargs['user_id'])
         return super().dispatch(request, *args, **kwargs)
-    
-    
+
     def get(self, request, *args, **kwargs):
         if self.follow =='following':
             follows = Follow.objects.filter(user = self.user)
@@ -110,11 +98,10 @@ class FollowersView(LoginRequiredMixin, View):
         return render(request, self.template_name,content)
 
 
-
 class UserCreatePostView(LoginRequiredMixin, CreateView):
     model = Post
     template_name = 'twitter/post_new.html'
-    fields = ["content","image"]
+    fields = ["content", "image"]
     success_url = reverse_lazy("twitter:home_page")
 
     def form_valid(self, form):
@@ -131,8 +118,9 @@ class DeletePostView(LoginRequiredMixin, DeleteView):
 
 class UpdatePostView(LoginRequiredMixin, UpdateView):
     model = Post
-    fields = ["content","image"]
+    fields = ["content", "image"]
     success_url = reverse_lazy("twitter:home_page")
+
     def form_valid(self, form):
         return super(UpdatePostView, self).form_valid(form)
 
@@ -154,21 +142,26 @@ class UpdatePostView(LoginRequiredMixin, UpdateView):
         return super(DetailsPostView, self).form_valid(form)
 
 '''
+
+
 class DetailsPostView(LoginRequiredMixin, View):
     template_name = 'twitter/post_detail.html'
     form_class = CommentForm
+
     def dispatch(self, request, *args, **kwargs):
-        self.pk =kwargs['pk']
-        self.posts = Post.objects.get(pk = self.pk,archive=True)
-        self.comment = Comment.objects.filter(post_id = self.pk,approach = True)
+        self.pk = kwargs['pk']
+        self.posts = Post.objects.get(pk=self.pk, archive=True)
+        self.comment = Comment.objects.filter(post_id=self.pk, approach=True)
         return super().dispatch(request, *args, **kwargs)
+
     def get(self, request, *args, **kwargs):
         form = self.form_class()
         context = {
-            'comments':self.comment, 'post':self.posts,"form":form
+            'comments': self.comment, 'post': self.posts, "form": form
         }
-        return render (request , self.template_name, context)
-    def post (self, request, *args, **kwargs):
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST) 
         if form.is_valid():
             endcomment = form.save(commit=False)
@@ -176,39 +169,44 @@ class DetailsPostView(LoginRequiredMixin, View):
             endcomment.author = request.user.profile
             endcomment.save()
         return redirect('twitter:details_post', self.posts.pk)
-       
+
+
 class FollowUserView(View):
     template_name = 'twitter/followuser.html'
+
     def post(self, request, *args, **kwargs):
-        q =  request.POST.get('search')
-        results = Profile.objects.filter(user__username__icontains=q,active = True)
+        q = request.POST.get('search')
+        results = Profile.objects.filter(user__username__icontains=q, active=True)
         print(results)
         context = {
-            'results':results
+            'results': results
         }
-        return render (request , self.template_name, context)
+        return render(request, self.template_name, context)
 
 
 class LikePostView(LoginRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
         self.pk =kwargs['pk']
-        self.like = Like.objects.filter(user = request.user.profile, post_id = self.pk)
+        self.like = Like.objects.filter(user= request.user.profile, post_id=self.pk)
         return super().dispatch(request, *args, **kwargs)
+
     def get(self, request, *args, **kwargs):
         if self.like.exists():
             self.like.delete()
         else:
-            Like(user= request.user.profile , post_id= self.pk).save()
+            Like(user=request.user.profile, post_id=self.pk).save()
         return redirect('/')
-    
+
+
 class DisLikePostView(LoginRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
         self.pk =kwargs['pk']
-        self.dislike = DisLike.objects.filter(user = request.user.profile, post_id = self.pk)
+        self.dislike = DisLike.objects.filter(user=request.user.profile, post_id=self.pk)
         return super().dispatch(request, *args, **kwargs)
+
     def get(self, request, *args, **kwargs):
         if self.dislike.exists():
             self.dislike.delete()
         else:
-            DisLike(user= request.user.profile , post_id= self.pk).save()
+            DisLike(user=request.user.profile, post_id=self.pk).save()
         return redirect('/')

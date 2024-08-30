@@ -4,35 +4,41 @@ from accounts.models import  Profile
 from core.tools import UploadToPathAndRename
 from accounts.models import MainModel
 
+
 class Post(MainModel):
     content = models.TextField()
-    author = models.ForeignKey(Profile, on_delete = models.CASCADE , related_name = 'posts_author')
-    image = models.ImageField(upload_to=UploadToPathAndRename("posts"),default='posts/default.jpg'
-    )
+    author = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='posts_author')
+    image = models.ImageField(upload_to=UploadToPathAndRename("posts"), default='posts/default.jpg')
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
-    archive = models.BooleanField(default = True)
+    archive = models.BooleanField(default=True)
+
     @property
     def number_of_comments(self):
-        return Comment.objects.filter(post=self,approach = True).count() 
+        return Comment.objects.filter(post=self, approach=True).count()
     
     @property
     def likes(self):
-        return Like.objects.filter(post=self).count() 
+        return Like.objects.filter(post=self).count()
+
     @property
     def dislikes(self):
-        return DisLike.objects.filter(post=self).count() 
+        return DisLike.objects.filter(post=self).count()
+
     def __str__(self):
         return self.content[:15]
     
     def get_snippet(self):
         return self.content[0:5]
+
     def get_absolute_url(self):
-        return reverse('twitter:api-v1:task-detail', kwargs={'pk':self.pk})
+        return reverse('twitter:api-v1:task-detail', kwargs={'pk': self.pk})
+
 
 class Like(models.Model):
     user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='ulike')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='upost')
+
     def __str__(self):
         return f'{self.user} --> Like this post -->  {self.post.content[:5]}' 
     
@@ -40,6 +46,7 @@ class Like(models.Model):
 class DisLike(models.Model):
     user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='udislike')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='udispost')
+
     def __str__(self):
         return f'{self.user} --> Dislike this post -->  {self.post.content[:5]}' 
     
@@ -57,14 +64,14 @@ class Comment(models.Model):
     
     def get_snippet(self):
         return self.content[0:5]
+
     def get_absolute_url(self):
-        return reverse('twitter:api-v1:comment-detail', kwargs={'pk':self.pk})
-    
+        return reverse('twitter:api-v1:comment-detail', kwargs={'pk': self.pk})
+
+
 class ImageFiled(MainModel):
     post = models.ForeignKey(Post,on_delete=models.CASCADE)
-    image = models.ImageField(upload_to=UploadToPathAndRename("posts"),default='posts/default.jpg'
-    )
-    
-    
+    image = models.ImageField(upload_to=UploadToPathAndRename("posts"), default='posts/default.jpg')
+
     def __str__(self):
-        return self.post    
+        return self.post
