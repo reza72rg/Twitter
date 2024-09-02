@@ -24,6 +24,7 @@ from ..utils import EmailThread
 import jwt
 from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
+from .permissions import IsNotAuthenticated
 
 
 class FollowersViewSetsApiView(viewsets.ModelViewSet):
@@ -56,8 +57,9 @@ class ProfileViewSetsApiView(generics.RetrieveUpdateAPIView):
     
 class RegisterViewSetsApiView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
+    permission_classes = [IsNotAuthenticated]
 
-    def post(self, request ,*args, **kwargs):
+    def post(self, request, *args, **kwargs):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -79,6 +81,7 @@ class RegisterViewSetsApiView(generics.GenericAPIView):
 
 class CustomLoginAuthToken(ObtainAuthToken):
     serializer_class = CustomTokenSerializer
+    permission_classes = [IsNotAuthenticated]
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data,
@@ -91,8 +94,16 @@ class CustomLoginAuthToken(ObtainAuthToken):
             'user_id': user.pk,
             'email': user.email
         })
+
         
-        
+class LogoutApiView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        logout(request)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 class CustomLogoutAuthToken(APIView):
     permission_classes = [IsAuthenticated]
     
@@ -138,8 +149,9 @@ class ChangePasswordViewSetsApiView(generics.GenericAPIView):
     
     
 class LoginApiView(APIView):
-
+    permission_classes = [IsNotAuthenticated]
     serializer_class = LoginSerializer
+
     def post(self, request, *args, **kwargs):
         """
         Login view to get user credentials

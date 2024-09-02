@@ -15,7 +15,7 @@ from .views import (
     CustomLogoutAuthToken,
     ChangePasswordViewSetsApiView,
     LoginApiView,
-    # LogoutApiView,
+    LogoutApiView,
     FollowingViewSetsApiView,
     TestEmail,
     ActivationApiView,
@@ -37,7 +37,7 @@ urlpatterns = [
     
     # login user
     path("login/", LoginApiView.as_view(), name="login"),
-    # path("logout/", LogoutApiView.as_view(), name="logout"),
+    path("logout/", LogoutApiView.as_view(), name="logout"),
     
     # activation
     path("activation/confirm/<str:token>/", ActivationApiView.as_view(), name="activation",),
