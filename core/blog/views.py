@@ -172,6 +172,7 @@ class DetailsPostView(LoginRequiredMixin, View):
             endcomment.post = self.posts
             endcomment.author = request.user.profile
             endcomment.save()
+            return redirect('/')
         return redirect('blog:details_post', self.posts.pk)
 
 
@@ -181,7 +182,6 @@ class FollowUserView(View):
     def post(self, request, *args, **kwargs):
         q = request.POST.get('search')
         results = Profile.objects.filter(user__username__icontains=q, active=True)
-        print(results)
         context = {
             'results': results
         }
