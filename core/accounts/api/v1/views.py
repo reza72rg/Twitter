@@ -106,12 +106,24 @@ class LogoutApiView(APIView):
 
 class CustomLogoutAuthToken(APIView):
     permission_classes = [IsAuthenticated]
-    
-    def post(self, request):
-        request.user.auth_token.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
-        
+    def post(self, request):
+        try:
+            # Attempt to delete the user's token
+            request.user.auth_token.delete()
+        except Token.DoesNotExist:
+            # If the token doesn't exist, just pass without raising an error
+            pass
+
+        # Log out the user by ending the session
+        logout(request)
+        data = {
+            'details': 'You do not have token and logout successfully'
+        }
+
+        return Response(data, status=status.HTTP_204_NO_CONTENT)
+
+
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomAuthTokenSerializer
     
@@ -146,7 +158,26 @@ class ChangePasswordViewSetsApiView(generics.GenericAPIView):
                 status=status.HTTP_200_OK,
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
+class LoginGenericView(generics.GenericAPIView):
+    permission_classes = [IsNotAuthenticated]
+    serializer_class = LoginSerializer
+
+
+    def post(self, request, *args, **kwargs):
+        """
+        Login view to get user credentials
+        """
+        serializer = LoginSerializer(data=request.data, many=False)
+
+        if serializer.is_valid():
+            user = serializer.validated_data.get("user")
+            if user is not None and user.is_active:
+                login(request, user)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     
 class LoginApiView(APIView):
     permission_classes = [IsNotAuthenticated]
@@ -185,7 +216,7 @@ class ActivationApiView(APIView):
         try:
             token = jwt.decode(token, key=settings.SECRET_KEY, algorithms=["HS256"])
             user_id = token.get('user_id') 
-            user_obj = Profile.objects.get(pk = user_id)
+            user_obj = Profile.objects.get(pk=user_id)
             if not user_obj.is_verified:
                 user_obj.is_verified = True
                 user_obj.save()

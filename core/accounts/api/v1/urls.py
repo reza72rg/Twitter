@@ -15,6 +15,7 @@ from .views import (
     CustomLogoutAuthToken,
     ChangePasswordViewSetsApiView,
     LoginApiView,
+    LoginGenericView,
     LogoutApiView,
     FollowingViewSetsApiView,
     TestEmail,
@@ -31,12 +32,13 @@ router.register("followers", FollowersViewSetsApiView, basename="followers")
 
 
 urlpatterns = [
-    path("test/", TestEmail.as_view(),name="test"),
+    path("test/", TestEmail.as_view(), name="test"),
     # following
     path("following/", FollowingViewSetsApiView.as_view(), name="following"),
     
     # login user
     path("login/", LoginApiView.as_view(), name="login"),
+    path("login-generic/", LoginGenericView.as_view(), name="login"),
     path("logout/", LogoutApiView.as_view(), name="logout"),
     
     # activation
