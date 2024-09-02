@@ -29,6 +29,7 @@
                 {% if request.user.is_authenticated %}
                 {% if request.user.profile.active %}
                     <a class="nav-item nav-link" href="{% url 'blog:create-posts' %}">Create a Tweet</a>
+                            <a class="nav-item nav-link" href="{% url 'blog:archive_posts' %}">All Post Archive </a>
                     {% endif %}
                     <a class="nav-item nav-link" href="{% url 'accounts:profile-edit' request.user.id %}">Settings</a>
                     

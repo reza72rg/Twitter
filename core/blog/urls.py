@@ -1,7 +1,7 @@
 from django.urls import path, include
 from blog.views import UserCreatePostView, PostListView, Aboutpage, FollowersView\
     , UserFollowListView, DeletePostView, UpdatePostView, DetailsPostView, FollowUserView\
-        , LikePostView, DisLikePostView
+        , LikePostView, DisLikePostView, ArchivePostsView
 
 # Set the app name for namespacing
 app_name = "blog"
@@ -9,6 +9,7 @@ app_name = "blog"
 urlpatterns = [
     path("", PostListView.as_view(), name="home_page"),
     path("about/", Aboutpage.as_view(), name="about"),
+    path("all-post-archive/", ArchivePostsView.as_view(), name="archive_posts"),
     path('user/<int:user_id>', UserFollowListView.as_view(), name='user-follows'),
     path('create_post/', UserCreatePostView.as_view(), name='create-posts'),
     path('followers/<int:user_id>/<str:letter>', FollowersView.as_view(), name='user-followers'),

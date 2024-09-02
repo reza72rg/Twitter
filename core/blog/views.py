@@ -214,3 +214,23 @@ class DisLikePostView(LoginRequiredMixin, View):
         else:
             DisLike(user=request.user.profile, post_id=self.pk).save()
         return redirect('/')
+
+
+class ArchivePostsView(LoginRequiredMixin, View):
+    template_name = 'blog/all_posts_archive.html'
+
+    def get(self, request, *args, **kwargs):
+        user = self.request.user.profile
+        posts = Post.objects.filter(author=user, archive=False)
+        context = {
+            'posts': posts
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        user = self.request.user.profile
+        post_ids = request.POST.getlist('post_ids')
+        if post_ids:
+            Post.objects.filter(id__in=post_ids, author=user).update(archive=True)
+            return redirect('blog:home_page')
+        return redirect('blog:home_page')
