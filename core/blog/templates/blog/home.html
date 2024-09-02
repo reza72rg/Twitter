@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
+{% load blog_tags %}
     <div class="row">
         <div class="col-12 col-md-3 pr-4 dont-move">
             <a href="/"> <h2><img class="img-fluid" width="60" src="{% static 'blog/logo.png' %}">BlogRoom</h2></a><br>
@@ -169,7 +170,7 @@
                                 </small>
                                 <small style="opacity: 0.4; margin-left:15px;">
                                     <a href="{% url 'blog:details_post' post.id %}">
-                                        <i style=" font-size: 16px;" class="far fa-comment"></i> {{ post.number_of_comments }} comment(s)
+                                        <i style=" font-size: 16px;" class="far fa-comment"></i> {% comments_count post.id %} comment(s)
                                     </a>
 
                                 </small>
