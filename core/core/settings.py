@@ -65,7 +65,7 @@ ROOT_URLCONF = "core.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        'DIRS': [BASE_DIR /'templates'],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -169,7 +169,7 @@ EMAIL_HOST_PASSWORD = ""
 
 LOGOUT_REDIRECT_URL = '/'  # Redirect to the homepage after logout
 
-'''# celery configs
+# celery configs
 CELERY_BROKER_URL = "redis://redis_twitter:6379/1"  # Update the hostname to redis_todoapp
 
 
@@ -185,4 +185,3 @@ CACHES = {
 }
 
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
-'''
