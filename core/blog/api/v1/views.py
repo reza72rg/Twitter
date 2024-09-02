@@ -1,4 +1,6 @@
-from rest_framework import  generics
+from django.http import Http404
+from django.shortcuts import get_object_or_404
+from rest_framework import generics, status
 from rest_framework import viewsets
 from django.contrib.auth.models import User
 from rest_framework.response import Response
@@ -8,7 +10,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from blog.models import Profile, Like, DisLike
 from blog.models import Post, Category
 from .serializers import PostSerializers, LikeSerializers\
-    , DislikeSerializers, CategorySerializers
+    , DislikeSerializers, CategorySerializers, PostSerializersArchive
 from .permission import IsOwnerOrReadOnly
 from blog.api.v1.pagination import CustomPagination
 from accounts.models import Follow
@@ -57,3 +59,25 @@ class CategoryViewSetsApiView(viewsets.ModelViewSet):
     serializer_class = CategorySerializers
     permission_classes = [IsAuthenticated]
     queryset = Category.objects.all()
+
+
+class PostArchiveListView(generics.ListAPIView):
+    serializer_class = PostSerializersArchive
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user.profile
+        queryset = Post.objects.filter(author=user, archive=False)
+        return queryset
+
+
+class PostArchiveDetailView(generics.RetrieveUpdateAPIView):
+    serializer_class = PostSerializersArchive
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user.profile
+        queryset = Post.objects.filter(author=user, archive=False)
+        return queryset
+
+

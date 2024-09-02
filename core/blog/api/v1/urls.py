@@ -5,6 +5,8 @@ from .views import (
     LikeViewSetsApiView,
     DisLikeViewSetsApiView,
     CategoryViewSetsApiView,
+    PostArchiveListView,
+    PostArchiveDetailView,
     
     )
 app_name = "api-v1"
@@ -16,5 +18,8 @@ router.register("dislike", DisLikeViewSetsApiView, basename="dislike")
 
 router.register("category", CategoryViewSetsApiView, basename="category")
 
-urlpatterns = router.urls
+urlpatterns = [
+    path("task-archive/", PostArchiveListView.as_view(), name="task-archive"),
+    path("task-archive/<int:pk>/", PostArchiveDetailView.as_view(), name="task-archive-update")
+    ]+router.urls
 

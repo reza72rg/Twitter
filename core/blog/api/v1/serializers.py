@@ -8,6 +8,33 @@ from rest_framework.exceptions import ValidationError
 from accounts.models import Follow
 
 
+class PostSerializersArchive(serializers.ModelSerializer):
+    absolute_url = serializers.SerializerMethodField()
+    snippet = serializers.CharField(source='get_snippet', read_only=True)
+
+    class Meta:
+        model = Post
+        fields = ['id', 'content', 'snippet', 'absolute_url', 'archive', 'author']
+        read_only_fields = ['author', 'content']
+
+    def get_absolute_url(self, obj):
+        request = self.context.get('request')
+        return request.build_absolute_uri(obj.pk)
+
+    def to_representation(self, instance):
+        request = self.context.get('request')
+        rep = super().to_representation(instance)
+        if request.parser_context.get('kwargs').get('pk'):
+            rep.pop('absolute_url')
+            rep.pop('snippet')
+        else:
+            rep.pop('content')
+        rep["author"] = UserTestSerializers(
+            instance.author, context={"request": request}
+        ).data
+        return rep
+
+
 class PostSerializers(serializers.ModelSerializer):
     snippet = serializers.CharField(source='get_snippet', read_only=True)
     relative_url = serializers.URLField(source='get_absolute_url', read_only=True)
