@@ -155,33 +155,29 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'blog.api.v1.pagination.CustomPagination',
 }
 
+# Email settings
+EMAIL_BACKEND = env("EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend")
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=False)
+EMAIL_HOST = env("EMAIL_HOST", default="localhost")
+EMAIL_PORT = env.int("EMAIL_PORT", default=25)
+EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
 
+# Celery configuration
+CELERY_BROKER_URL = env("CELERY_BROKER_URL", default="redis://localhost:6379/1")
 
-# Email Verify
-# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_USE_TLS = False
-EMAIL_HOST = "smtp4dev"
-EMAIL_PORT = 25
-EMAIL_HOST_USER = ""
-EMAIL_HOST_PASSWORD = ""
-
-
-LOGOUT_REDIRECT_URL = '/'  # Redirect to the homepage after logout
-
-# celery configs
-CELERY_BROKER_URL = "redis://redis_twitter:6379/1"  # Update the hostname to redis_todoapp
-
-
-# caching configs
+# Caching configuration
 CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://redis_twitter:6379/2",  # Update the hostname to redis_todoapp
+        "BACKEND": env("CACHES_DEFAULT_BACKEND", default="django_redis.cache.RedisCache"),
+        "LOCATION": env("CACHES_DEFAULT_LOCATION", default="redis://localhost:6379/2"),
         "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "CLIENT_CLASS": env("CACHES_DEFAULT_OPTIONS_CLIENT_CLASS", default="django_redis.client.DefaultClient"),
         },
     }
 }
+
+# Logout redirect URL
+LOGOUT_REDIRECT_URL = env("LOGOUT_REDIRECT_URL", default='/')
 
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
