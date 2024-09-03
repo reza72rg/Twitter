@@ -15,7 +15,9 @@ urlpatterns = [
     # Logout view
     path("logout/", CustomLogoutView.as_view(), name="logout"),
     path(
-        "logout/success/", LogoutSuccessView.as_view(), name="logout_success"
+        "logout/success/",
+        LogoutSuccessView.as_view(),
+        name="logout_success",
     ),
     # Register view
     path("register/", RegisterPageView.as_view(), name="register"),

@@ -1,13 +1,9 @@
-from django.http import Http404
-from django.shortcuts import get_object_or_404
-from rest_framework import generics, status
+from rest_framework import generics
 from rest_framework import viewsets
-from django.contrib.auth.models import User
-from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
-from blog.models import Profile, Like, DisLike
+from blog.models import Like, DisLike
 from blog.models import Post, Category
 from .serializers import (
     PostSerializers,
@@ -39,7 +35,9 @@ class PostViewSetsApiView(viewsets.ModelViewSet):
         ).values_list("follow_user", flat=True)
         queryset = Post.objects.filter(
             author__in=user_follow, archive=True
-        ) | Post.objects.filter(author=self.request.user.profile, archive=True)
+        ) | Post.objects.filter(
+            author=self.request.user.profile, archive=True
+        )
         return queryset
 
     # def get_queryset(self, *args, **kwargs):

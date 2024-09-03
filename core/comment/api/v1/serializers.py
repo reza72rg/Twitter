@@ -49,9 +49,9 @@ class CommentSerializers(serializers.ModelSerializer):
         if not Post.objects.filter(
             (
                 Q(
-                    author__in=Follow.objects.filter(user=user).values_list(
-                        "follow_user", flat=True
-                    )
+                    author__in=Follow.objects.filter(
+                        user=user
+                    ).values_list("follow_user", flat=True)
                 )
                 | Q(author=user)
             )

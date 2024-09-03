@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 from rest_framework.routers import DefaultRouter
 from .views import (
     PostViewSetsApiView,
@@ -19,7 +19,9 @@ router.register("dislike", DisLikeViewSetsApiView, basename="dislike")
 router.register("category", CategoryViewSetsApiView, basename="category")
 
 urlpatterns = [
-    path("task-archive/", PostArchiveListView.as_view(), name="task-archive"),
+    path(
+        "task-archive/", PostArchiveListView.as_view(), name="task-archive"
+    ),
     path(
         "task-archive/<int:pk>/",
         PostArchiveDetailView.as_view(),

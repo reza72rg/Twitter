@@ -1,15 +1,14 @@
 from django.contrib.auth.views import LoginView
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
-from django.shortcuts import redirect
 from django.views.generic import TemplateView
 from django.views.generic.edit import UpdateView
 from django.contrib.auth import logout
 from django.shortcuts import get_object_or_404
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render, redirect
-from accounts.forms import UserRegisterForm, ProfileUpdateForm
+from django.shortcuts import redirect
+from accounts.forms import UserRegisterForm
 from accounts.models import Profile, User
 
 

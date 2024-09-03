@@ -1,12 +1,8 @@
-from django.db.models.query import QuerySet
-from django.http import HttpRequest
-from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import (
     ListView,
-    DetailView,
     CreateView,
     UpdateView,
     DeleteView,
@@ -14,9 +10,8 @@ from django.views.generic import (
 from blog.models import Post, Like, DisLike
 from comment.models import Comment
 from comment.forms import CommentForm
-from accounts.models import User, Profile, Follow
+from accounts.models import Profile, Follow
 from blog.forms import PostForm
-from django.contrib import messages
 from django.urls import reverse_lazy
 
 # Create your views here.
@@ -35,7 +30,9 @@ class PostListView(LoginRequiredMixin, ListView):
             ).values_list("follow_user", flat=True)
             self.posts = Post.objects.filter(
                 author__in=self.user_follow, archive=True
-            ) | Post.objects.filter(author=request.user.profile, archive=True)
+            ) | Post.objects.filter(
+                author=request.user.profile, archive=True
+            )
         else:
             self.posts = (
                 Post.objects.none()
@@ -175,12 +172,18 @@ class DetailsPostView(LoginRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
         self.pk = kwargs["pk"]
         self.posts = Post.objects.get(pk=self.pk, archive=True)
-        self.comment = Comment.objects.filter(post_id=self.pk, approach=True)
+        self.comment = Comment.objects.filter(
+            post_id=self.pk, approach=True
+        )
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         form = self.form_class()
-        context = {"comments": self.comment, "post": self.posts, "form": form}
+        context = {
+            "comments": self.comment,
+            "post": self.posts,
+            "form": form,
+        }
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):

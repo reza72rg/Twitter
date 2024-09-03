@@ -167,7 +167,8 @@ CELERY_BROKER_URL = env(
 CACHES = {
     "default": {
         "BACKEND": env(
-            "CACHES_DEFAULT_BACKEND", default="django_redis.cache.RedisCache"
+            "CACHES_DEFAULT_BACKEND",
+            default="django_redis.cache.RedisCache",
         ),
         "LOCATION": env(
             "CACHES_DEFAULT_LOCATION", default="redis://localhost:6379/2"

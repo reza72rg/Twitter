@@ -20,7 +20,8 @@ class Post(MainModel):
         Profile, on_delete=models.CASCADE, related_name="posts_author"
     )
     image = models.ImageField(
-        upload_to=UploadToPathAndRename("posts"), default="posts/default.jpg"
+        upload_to=UploadToPathAndRename("posts"),
+        default="posts/default.jpg",
     )
     category = models.ForeignKey(
         "Category", on_delete=models.SET_NULL, null=True
@@ -56,7 +57,9 @@ class Like(models.Model):
     )
 
     def __str__(self):
-        return f"{self.user} --> Like this post -->  {self.post.content[:5]}"
+        return (
+            f"{self.user} --> Like this post -->  {self.post.content[:5]}"
+        )
 
 
 class DisLike(models.Model):
@@ -68,15 +71,14 @@ class DisLike(models.Model):
     )
 
     def __str__(self):
-        return (
-            f"{self.user} --> Dislike this post -->  {self.post.content[:5]}"
-        )
+        return f"{self.user} --> Dislike this post -->  {self.post.content[:5]}"
 
 
 class ImageFiled(MainModel):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     image = models.ImageField(
-        upload_to=UploadToPathAndRename("posts"), default="posts/default.jpg"
+        upload_to=UploadToPathAndRename("posts"),
+        default="posts/default.jpg",
     )
 
     def __str__(self):

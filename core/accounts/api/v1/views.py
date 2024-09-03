@@ -1,10 +1,7 @@
 from rest_framework import generics
-from rest_framework import viewsets
 from django.contrib.auth.models import User
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import SearchFilter, OrderingFilter
 from accounts.models import Follow
 from .serializers import (
     FollowersSerializers,
@@ -27,7 +24,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from mail_templated import EmailMessage
 from django.shortcuts import get_object_or_404
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from ..utils import EmailThread
 import jwt
 from django.conf import settings
@@ -49,7 +46,9 @@ class FollowingViewSetsApiView(generics.ListAPIView):
     serializer_class = FollowersSerializers
 
     def get_queryset(self):
-        queryset = Follow.objects.filter(follow_user=self.request.user.profile)
+        queryset = Follow.objects.filter(
+            follow_user=self.request.user.profile
+        )
         return queryset
 
 
@@ -83,7 +82,9 @@ class RegisterViewSetsApiView(generics.GenericAPIView):
             )
             EmailThread(email_obj).start()
             return Response(data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            serializer.errors, status=status.HTTP_400_BAD_REQUEST
+        )
 
     def get_tokens_for_user(self, user):
         refresh = RefreshToken.for_user(user)
@@ -165,7 +166,9 @@ class ChangePasswordViewSetsApiView(generics.GenericAPIView):
                 {"details": "password was change successfully"},
                 status=status.HTTP_200_OK,
             )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            serializer.errors, status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 class LoginGenericView(generics.GenericAPIView):
@@ -183,7 +186,9 @@ class LoginGenericView(generics.GenericAPIView):
             if user is not None and user.is_active:
                 login(request, user)
                 return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            serializer.errors, status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 class LoginApiView(APIView):
@@ -201,7 +206,9 @@ class LoginApiView(APIView):
             if user is not None and user.is_active:
                 login(request, user)
                 return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            serializer.errors, status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 class TestEmail(generics.GenericAPIView):
@@ -335,4 +342,6 @@ class ResetPasswordConfirmApiView(APIView):
                 {"details": "password was change successfully"},
                 status=status.HTTP_200_OK,
             )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            serializer.errors, status=status.HTTP_400_BAD_REQUEST
+        )

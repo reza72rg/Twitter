@@ -16,12 +16,17 @@ def get_image_field(self):
 
 class MainModel(models.Model):
     create_date = models.DateTimeField(
-        auto_now_add=True, blank=True, null=True, verbose_name=_("create date")
+        auto_now_add=True,
+        blank=True,
+        null=True,
+        verbose_name=_("create date"),
     )
     modify_date = models.DateTimeField(
         auto_now=True, blank=True, null=True, verbose_name=_("modify date")
     )
-    is_active = models.BooleanField(default=True, verbose_name=_("is active"))
+    is_active = models.BooleanField(
+        default=True, verbose_name=_("is active")
+    )
 
     def save(self, *args, **kwargs):
         image_fields = get_image_field(self)
@@ -36,7 +41,9 @@ class MainModel(models.Model):
                         getattr(self, i).name.rpartition(".")[-1].upper()
                     )
                     image_extension = (
-                        "JPEG" if image_extension == "JPG" else image_extension
+                        "JPEG"
+                        if image_extension == "JPG"
+                        else image_extension
                     )
                     image.save(image_io, image_extension, quality=60)
                     new_image = File(image_io, name=getattr(self, i).name)

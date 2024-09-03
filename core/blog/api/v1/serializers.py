@@ -1,7 +1,6 @@
 from django.db.models import Q
 from blog.models import Post
 from rest_framework import serializers
-from django.contrib.auth.models import User
 from blog.models import Profile, Like, DisLike, Category
 from accounts.api.v1.serializers import UserTestSerializers
 from rest_framework.exceptions import ValidationError
@@ -115,9 +114,9 @@ class LikeSerializers(serializers.ModelSerializer):
         if not Post.objects.filter(
             (
                 Q(
-                    author__in=Follow.objects.filter(user=user).values_list(
-                        "follow_user", flat=True
-                    )
+                    author__in=Follow.objects.filter(
+                        user=user
+                    ).values_list("follow_user", flat=True)
                 )
                 | Q(author=user)
             )
@@ -136,7 +135,8 @@ class LikeSerializers(serializers.ModelSerializer):
         #     raise ValidationError({"error": "You cannot Like this post because you follow user."}, code='invalid')
         if relation.exists():
             raise ValidationError(
-                {"error": "You cannot Like this post again."}, code="invalid"
+                {"error": "You cannot Like this post again."},
+                code="invalid",
             )
         return super().create(validated_data)
 
@@ -159,9 +159,9 @@ class DislikeSerializers(serializers.ModelSerializer):
         if not Post.objects.filter(
             (
                 Q(
-                    author__in=Follow.objects.filter(user=user).values_list(
-                        "follow_user", flat=True
-                    )
+                    author__in=Follow.objects.filter(
+                        user=user
+                    ).values_list("follow_user", flat=True)
                 )
                 | Q(author=user)
             )
@@ -169,7 +169,9 @@ class DislikeSerializers(serializers.ModelSerializer):
             & Q(archive=True)
         ).exists():
             raise ValidationError(
-                {"error": "You do not have permission to Dislike this post."},
+                {
+                    "error": "You do not have permission to Dislike this post."
+                },
                 code="invalid",
             )
 
