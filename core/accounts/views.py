@@ -8,7 +8,7 @@ from django.contrib.auth import logout
 from django.shortcuts import get_object_or_404
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect
 from accounts.forms import UserRegisterForm, ProfileUpdateForm
 from accounts.models import Profile, User
 
@@ -17,10 +17,10 @@ from accounts.models import Profile, User
 class CustomLoginView(LoginView):
     template_name = "accounts/login.html"
     redirect_authenticated_user = True
-        # Redirect to success URL if user is already authenticated
+    # Redirect to success URL if user is already authenticated
 
     def get_success_url(self):
-        return reverse_lazy('blog:home_page')
+        return reverse_lazy("blog:home_page")
         # Redirect to the task list page after successful login
 
 
@@ -29,7 +29,7 @@ class RegisterPageView(CreateView):
     template_name = "accounts/register.html"
 
     def get_success_url(self):
-        return reverse_lazy('accounts:login')
+        return reverse_lazy("accounts:login")
         # Redirect to the task list page after successful login
 
     def get(self, *args, **kwargs):
@@ -40,18 +40,18 @@ class RegisterPageView(CreateView):
 
 
 class CustomLogoutView(LoginRequiredMixin, View):
-    login_url = 'accounts/login.html'
+    login_url = "accounts/login.html"
 
     def get(self, request):
         logout(request)
-        return redirect('accounts:logout_success')
+        return redirect("accounts:logout_success")
 
 
 class LogoutSuccessView(TemplateView):
-    template_name = 'accounts/logout.html'
+    template_name = "accounts/logout.html"
 
 
-'''class ProfileView(LoginRequiredMixin, View):
+"""class ProfileView(LoginRequiredMixin, View):
     form_class = UserUpdateForm
     template_name = 'accounts/profile.html'
     second_form_class = ProfileUpdateForm
@@ -70,18 +70,18 @@ class LogoutSuccessView(TemplateView):
             return redirect('/')
         content = {'uform':uform,'pform':pform}
         return render (request , self.template_name,content)
-       '''
+       """
 
 
 class ProfileEditView(LoginRequiredMixin, UpdateView):
-    template_name = 'accounts/profile.html'
+    template_name = "accounts/profile.html"
     model = Profile
-    fields = ['image', 'descriptions', 'active']
+    fields = ["image", "descriptions", "active"]
     success_url = reverse_lazy("blog:home_page")
 
     def form_valid(self, form):
-        value = self.request.POST['user']
-        user_email = self.request.POST['email']
+        value = self.request.POST["user"]
+        user_email = self.request.POST["email"]
         username = get_object_or_404(User, username=self.request.user)
         username.username = value
         username.email = user_email
@@ -90,6 +90,7 @@ class ProfileEditView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['username'] = User.objects.get(username=self.request.user.profile)
+        context["username"] = User.objects.get(
+            username=self.request.user.profile
+        )
         return context
-   

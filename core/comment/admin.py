@@ -1,5 +1,6 @@
 from django.contrib import admin
 from comment.models import Comment
+
 # Register your models here.
 
 
@@ -15,4 +16,4 @@ class CommentAdmin(admin.ModelAdmin):
         return ["post", "author", "approach"]
 
     def get_list_filter(self, request, filters=None):
-        return ["post", "author" , "approach"]
+        return ["post", "author", "approach"]

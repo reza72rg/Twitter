@@ -9,5 +9,5 @@ class LoginRequiredMiddleware:
     def __call__(self, request):
         response = self.get_response(request)
         if isinstance(response, NotAuthenticated):
-            return redirect('/login/')  # Redirect to your login URL
+            return redirect("/login/")  # Redirect to your login URL
         return response

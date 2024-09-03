@@ -32,22 +32,16 @@ INSTALLED_APPS = [
     "accounts.apps.AccountsConfig",
     "blog.apps.BlogConfig",
     "comment.apps.CommentConfig",
-    
     # install app
     "crispy_bootstrap4",
     "crispy_forms",
-    'mail_templated',
-
+    "mail_templated",
     # rest framework
-    'rest_framework',
-    'rest_framework.authtoken',
-
-    'django_filters',
-    'drf_yasg',
-    
-
-
-    ]
+    "rest_framework",
+    "rest_framework.authtoken",
+    "django_filters",
+    "drf_yasg",
+]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -65,7 +59,7 @@ ROOT_URLCONF = "core.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        'DIRS': [BASE_DIR /'templates'],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -131,9 +125,9 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
-MEDIA_URL = 'media/'
-STATIC_ROOT = BASE_DIR / 'static'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = "media/"
+STATIC_ROOT = BASE_DIR / "static"
+MEDIA_ROOT = BASE_DIR / "media"
 
 
 # Default primary key field type
@@ -142,21 +136,22 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
-    'DEFAULT_PAGINATION_CLASS': 'blog.api.v1.pagination.CustomPagination',
+    "DEFAULT_PAGINATION_CLASS": "blog.api.v1.pagination.CustomPagination",
 }
 
 # Email settings
-EMAIL_BACKEND = env("EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend")
+EMAIL_BACKEND = env(
+    "EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend"
+)
 EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=False)
 EMAIL_HOST = env("EMAIL_HOST", default="localhost")
 EMAIL_PORT = env.int("EMAIL_PORT", default=25)
@@ -164,20 +159,29 @@ EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
 
 # Celery configuration
-CELERY_BROKER_URL = env("CELERY_BROKER_URL", default="redis://localhost:6379/1")
+CELERY_BROKER_URL = env(
+    "CELERY_BROKER_URL", default="redis://localhost:6379/1"
+)
 
 # Caching configuration
 CACHES = {
     "default": {
-        "BACKEND": env("CACHES_DEFAULT_BACKEND", default="django_redis.cache.RedisCache"),
-        "LOCATION": env("CACHES_DEFAULT_LOCATION", default="redis://localhost:6379/2"),
+        "BACKEND": env(
+            "CACHES_DEFAULT_BACKEND", default="django_redis.cache.RedisCache"
+        ),
+        "LOCATION": env(
+            "CACHES_DEFAULT_LOCATION", default="redis://localhost:6379/2"
+        ),
         "OPTIONS": {
-            "CLIENT_CLASS": env("CACHES_DEFAULT_OPTIONS_CLIENT_CLASS", default="django_redis.client.DefaultClient"),
+            "CLIENT_CLASS": env(
+                "CACHES_DEFAULT_OPTIONS_CLIENT_CLASS",
+                default="django_redis.client.DefaultClient",
+            ),
         },
     }
 }
 
 # Logout redirect URL
-LOGOUT_REDIRECT_URL = env("LOGOUT_REDIRECT_URL", default='/')
+LOGOUT_REDIRECT_URL = env("LOGOUT_REDIRECT_URL", default="/")
 
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True

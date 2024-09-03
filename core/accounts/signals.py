@@ -7,13 +7,12 @@ from blog.models import Post
 @receiver(post_save, sender=Profile)
 def update_profile(sender, instance, created, **kwargs):
     if not instance.active:
-        posts = Post.objects.filter(author= instance.user.profile)
+        posts = Post.objects.filter(author=instance.user.profile)
         for post in posts:
             post.archive = False
             post.save()
     if instance.active:
-        posts = Post.objects.filter(author= instance.user.profile)
+        posts = Post.objects.filter(author=instance.user.profile)
         for post in posts:
             post.archive = True
             post.save()
-

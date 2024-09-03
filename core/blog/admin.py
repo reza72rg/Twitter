@@ -1,5 +1,6 @@
 from django.contrib import admin
 from blog.models import Post, Like, DisLike, Category
+
 # Register your models here.
 
 
@@ -61,4 +62,3 @@ class DisLikeAdmin(admin.ModelAdmin):
 
     def get_list_filter(self, request, filters=None):
         return ["user", "post"]
-
