@@ -18,7 +18,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 #         fields = ['id','username', 'email', 'active', 'descriptions']
 
 
-class UserSerializer(serializers.ModelSerializer):
+class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("username", "email")
@@ -26,7 +26,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializers(serializers.ModelSerializer):
-    user = UserSerializer(required=True, many=False)
+    user = CustomUserSerializer(required=True, many=False)
 
     class Meta:
         model = Profile
@@ -44,7 +44,7 @@ class ProfileSerializers(serializers.ModelSerializer):
         user_data = validated_data.pop("user")
         username = self.data["user"]["username"]
         user = User.objects.get(username=username)
-        user_serializer = UserSerializer(data=user_data)
+        user_serializer = CustomUserSerializer(data=user_data)
         if user_serializer.is_valid():
             user_serializer.update(user, user_data)
             return super(ProfileSerializers, self).update(

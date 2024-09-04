@@ -6,10 +6,10 @@ class QuickstartUser(HttpUser):
     def on_start(self):
         response = self.client.post(
             "/accounts/api/v2/jwt/create/",
-            data={"username": "test", "password": "123456789rg"},
+            data={"username": "reza", "password": "123456789ab"},
         ).json()
         self.client.headers = {
-            "Authorization": f"Bearer {response.get('access',None)}"
+            "Authorization": f"Bearer {response.get('access', None)}"
         }
 
     @task
