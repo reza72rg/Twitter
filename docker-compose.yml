@@ -1,63 +1,43 @@
 version: '3.9'
   
 services:
-  redis:
-    container_name: redis
+  redis_test:
+    container_name: redis_test
     image: redis
     restart: always
     ports:
-      - "6379:6379"
+      - "6382:6379"
     command: redis-server --save 60 1 --loglevel warning
 
-
-  backend:
+  backend_test:
     build: .
-    container_name: backend
+    container_name: backend_test
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./core:/app/
+      - ./core:/app_test/
     ports:
       - "8000:8000"
     environment:
-      - SECRET_KEY=test
-      - DEBUG=True
+      - SECRET_KEY=${SECRET_KEY}
+      - DEBUG=${DEBUG}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+      - DATABASE_ENGINE=${DATABASE_ENGINE}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_HOST=db
+      - DATABASE_PORT=${DATABASE_PORT}
     depends_on:
-      - redis
+      - redis_test
 
 
-  worker:
+  worker_test:
     build: .
     command: celery -A core worker --loglevel warning
     volumes:
-      - ./core:/app/
+      - ./core:/app_test/
     depends_on:
-      - redis
-      - backend
+      - redis_test
+      - backend_test
 
     
-  smtp4dev:
-    image: rnwood/smtp4dev:v3
-    restart: always
-    ports:
-      - '5000:80'
-      - '25:25'
-      - '143:143'
-    volumes:
-        - smtp4dev-data:/smtp4dev
-    environment:
-      - ServerOptions__HostName=smtp4dev
-  master:
-    image: locustio/locust
-    ports:
-     - "8089:8089"
-    volumes:
-      - ./core/locust:/mnt/locust
-    command: -f /mnt/locust/locustfile.py --master -H http://backend:8000
-  
-  locust_worker:
-    image: locustio/locust
-    volumes:
-      - ./core/locust:/mnt/locust
-    command: -f /mnt/locust/locustfile.py --worker --master-host master
-volumes:
-  smtp4dev-data:

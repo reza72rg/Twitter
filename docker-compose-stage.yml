@@ -6,7 +6,7 @@ services:
     image: redis
     restart: always
     ports:
-      - "6381:6379"  # Updated port mapping
+      - "6381:6379"
     command: redis-server --save 60 1 --loglevel warning
 
   postgresql_twitter:
@@ -22,13 +22,12 @@ services:
   backend_twitter:
     build: .
     container_name: backend_twitter
-    # command: gunicorn core.wsgi --bind 0.0.0.0:8000
-    command: python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic --noinput gunicorn core.wsgi --bind 0.0.0.0:8000
+    command: gunicorn core.wsgi --bind 0.0.0.0:8000 --reload
+    # command: python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic --noinput gunicorn core.wsgi --bind 0.0.0.0:8000
     volumes:
       - ./core:/app_twitter
       - static_volume:/app_twitter/static
       - media_volume:/app_twitter/media
-      - ./.env:/app_twitter/.env
     expose:
       - "8000"
     environment:
@@ -58,6 +57,7 @@ services:
     depends_on:
       - redis_twitter
       - backend_twitter
+
   worker_celery_twitter:
     build: .
     container_name: worker_celery_twitter
@@ -80,6 +80,33 @@ services:
       - postgresql_twitter
       - backend_twitter
 
+  smtp4dev:
+    image: rnwood/smtp4dev:v3
+    restart: always
+    ports:
+      - '5000:80'
+      - '25:25'
+      - '143:143'
+    volumes:
+      - smtp4dev-data:/smtp4dev
+    environment:
+      - ServerOptions__HostName=smtp4dev
+
+  master:
+    image: locustio/locust
+    ports:
+      - "8089:8089"
+    volumes:
+      - ./core/locust:/mnt/locust
+    command: -f /mnt/locust/locustfile.py --master -H http://backend_twitter:8000
+
+  locust_worker:
+    image: locustio/locust
+    volumes:
+      - ./core/locust:/mnt/locust
+    command: -f /mnt/locust/locustfile.py --worker --master-host master
+
 volumes:
   static_volume:
   media_volume:
+  smtp4dev-data:
