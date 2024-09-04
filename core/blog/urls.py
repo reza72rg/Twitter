@@ -1,5 +1,5 @@
 from django.urls import path, include
-from blog.views import (
+from .views import (
     UserCreatePostView,
     PostListView,
     Aboutpage,
