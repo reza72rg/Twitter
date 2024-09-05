@@ -19,9 +19,9 @@ services:
     ports:
       - "5435:5432"
 
-  backend_twitter:
+  backend:
     build: .
-    container_name: backend_twitter
+    container_name: backend
     command: gunicorn core.wsgi --bind 0.0.0.0:8000 --reload
     # command: python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic --noinput gunicorn core.wsgi --bind 0.0.0.0:8000
     volumes:
@@ -56,7 +56,7 @@ services:
       - media_volume:/home/app_twitter/media
     depends_on:
       - redis_twitter
-      - backend_twitter
+      - backend
 
   worker_celery_twitter:
     build: .
@@ -78,7 +78,7 @@ services:
     depends_on:
       - redis_twitter
       - postgresql_twitter
-      - backend_twitter
+      - backend
 
   smtp4dev:
     image: rnwood/smtp4dev:v3
