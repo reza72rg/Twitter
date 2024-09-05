@@ -21,7 +21,9 @@ class Command(BaseCommand):
             email = self.fake.email()
             password = "123456789ab"
 
-            user = User.objects.create_user(username=username, email=email, password=password)
+            user = User.objects.create_user(
+                username=username, email=email, password=password
+            )
             profile, created = Profile.objects.get_or_create(user=user)
             profile.first_name = self.fake.first_name()
             profile.last_name = self.fake.last_name()
@@ -29,10 +31,16 @@ class Command(BaseCommand):
             profile.save()
 
             users.append(profile)
-            self.stdout.write(self.style.SUCCESS(f"Successfully created user with username: {username}"))
+            self.stdout.write(
+                self.style.SUCCESS(
+                    f"Successfully created user with username: {username}"
+                )
+            )
 
         # Create categories
-        categories = [Category.objects.create(name=self.fake.word()) for _ in range(5)]
+        categories = [
+            Category.objects.create(name=self.fake.word()) for _ in range(5)
+        ]
 
         # Create posts
         posts = []
@@ -42,11 +50,15 @@ class Command(BaseCommand):
             post = Post.objects.create(
                 author=profile,
                 content=self.fake.paragraph(nb_sentences=5),
-                category=category
+                category=category,
             )
             posts.append(post)
 
-        self.stdout.write(self.style.SUCCESS('Successfully created 5 posts with random data.'))
+        self.stdout.write(
+            self.style.SUCCESS(
+                "Successfully created 5 posts with random data."
+            )
+        )
 
         # Create likes, dislikes, and comments
         for _ in range(5):
@@ -55,22 +67,16 @@ class Command(BaseCommand):
             post = self.fake.random_element(elements=posts)
 
             # Create like
-            Like.objects.create(
-                user=profile,
-                post=post
-            )
+            Like.objects.create(user=profile, post=post)
 
             # Create dislike
-            DisLike.objects.create(
-                user=profile,
-                post=post
-            )
+            DisLike.objects.create(user=profile, post=post)
 
             # Create comment
             Comment.objects.create(
                 author=profile,
                 post=post,
-                content=self.fake.paragraph(nb_sentences=1)
+                content=self.fake.paragraph(nb_sentences=1),
             )
             # Create Follow
             Follow.objects.create(
@@ -78,4 +84,8 @@ class Command(BaseCommand):
                 follow_user=profile_follow,
             )
 
-        self.stdout.write(self.style.SUCCESS('Successfully created likes, dislikes, Follow, and comments.'))
+        self.stdout.write(
+            self.style.SUCCESS(
+                "Successfully created likes, dislikes, Follow, and comments."
+            )
+        )

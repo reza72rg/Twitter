@@ -1,10 +1,9 @@
 from django.db.models import Q
-from blog.models import Post
 from rest_framework import serializers
-from blog.models import Profile, Like, DisLike, Category
-from accounts.api.v1.serializers import UserTestSerializers
 from rest_framework.exceptions import ValidationError
-from accounts.models import Follow
+from ...models import Like, DisLike, Category, Post
+from accounts.api.v1.serializers import UserTestSerializers
+from accounts.models import Follow, Profile
 
 
 class PostSerializersArchive(serializers.ModelSerializer):
@@ -50,9 +49,6 @@ class PostSerializers(serializers.ModelSerializer):
     category = serializers.SlugRelatedField(
         slug_field="name", queryset=Category.objects.all()
     )
-    # author = serializers.SlugRelatedField(
-    #     many=False, slug_field="user.username", queryset=Profile.objects.all()
-    # )
 
     class Meta:
         model = Post
@@ -108,31 +104,18 @@ class LikeSerializers(serializers.ModelSerializer):
     def create(self, validated_data):
         user = self.context["request"].user.profile
         validated_data["user"] = user
-        #  relation_follow = Follow.objects.filter(user=validated_data['user'], follow_user=validated_data['follow_user'])
 
         # Ensure the user is liking a post they have permission to like
         if not Post.objects.filter(
-            (
-                Q(
-                    author__in=Follow.objects.filter(
-                        user=user
-                    ).values_list("follow_user", flat=True)
-                )
-                | Q(author=user)
-            )
-            & Q(id=validated_data["post"].id)
-            & Q(archive=True)
-        ).exists():
-            raise ValidationError(
-                {"error": "You do not have permission to like this post."},
-                code="invalid",
-            )
+            (Q(author__in=Follow.objects.filter(user=user).values_list(
+                "follow_user", flat=True)) | Q(author=user)) & Q(id=validated_data["post"].id) & Q(
+                archive=True)).exists():
+            raise ValidationError({"error": "You do not have permission to like this post."}, code="invalid", )
 
         relation = Like.objects.filter(
             user=validated_data["user"], post=validated_data["post"]
         )
-        # if relation_follow.exists():
-        #     raise ValidationError({"error": "You cannot Like this post because you follow user."}, code='invalid')
+
         if relation.exists():
             raise ValidationError(
                 {"error": "You cannot Like this post again."},
@@ -153,36 +136,18 @@ class DislikeSerializers(serializers.ModelSerializer):
         return rep
 
     def create(self, validated_data):
-        # validated_data['user'] = Profile.objects.get(user__id=self.context.get('request').user.id)
         user = self.context["request"].user.profile
         validated_data["user"] = user
         if not Post.objects.filter(
-            (
-                Q(
-                    author__in=Follow.objects.filter(
-                        user=user
-                    ).values_list("follow_user", flat=True)
-                )
-                | Q(author=user)
-            )
-            & Q(id=validated_data["post"].id)
-            & Q(archive=True)
-        ).exists():
+            (Q(author__in=Follow.objects.filter(user=user).values_list("follow_user", flat=True)) | Q(author=user)) & Q(
+                id=validated_data["post"].id) & Q(archive=True)).exists():
             raise ValidationError(
-                {
-                    "error": "You do not have permission to Dislike this post."
-                },
-                code="invalid",
-            )
+                {"error": "You do not have permission to Dislike this post."}, code="invalid",)
 
-        relation = DisLike.objects.filter(
-            user=user, post=validated_data["post"]
-        )
+        relation = DisLike.objects.filter(user=user, post=validated_data["post"])
         if relation.exists():
             raise ValidationError(
-                {"error": "You cannot DisLike this post again."},
-                code="invalid",
-            )
+                {"error": "You cannot DisLike this post again."}, code="invalid",)
         return super().create(validated_data)
 
 

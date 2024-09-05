@@ -57,9 +57,7 @@ class Like(models.Model):
     )
 
     def __str__(self):
-        return (
-            f"{self.user} --> Like this post -->  {self.post.content[:5]}"
-        )
+        return f"{self.user} --> Like this post -->  {self.post.content[:5]}"
 
 
 class DisLike(models.Model):
@@ -71,7 +69,9 @@ class DisLike(models.Model):
     )
 
     def __str__(self):
-        return f"{self.user} --> Dislike this post -->  {self.post.content[:5]}"
+        return (
+            f"{self.user} --> Dislike this post -->  {self.post.content[:5]}"
+        )
 
 
 class ImageFiled(MainModel):

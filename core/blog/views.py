@@ -32,9 +32,7 @@ class PostListView(LoginRequiredMixin, ListView):
             ).values_list("follow_user", flat=True)
             self.posts = Post.objects.filter(
                 author__in=self.user_follow, archive=True
-            ) | Post.objects.filter(
-                author=request.user.profile, archive=True
-            )
+            ) | Post.objects.filter(author=request.user.profile, archive=True)
         else:
             self.posts = (
                 Post.objects.none()
@@ -69,18 +67,12 @@ class UserFollowListView(LoginRequiredMixin, ListView):
         if request.user.profile.active:
             self.user = Profile.objects.get(user_id=kwargs["user_id"])
             self.relation = Follow.objects.filter(
-                user=request.user.profile, follow_user=self.user
-            )
+                user=request.user.profile, follow_user=self.user)
             self.posts = []
             self.can_follow = True
-            if (
-                self.relation.exists()
-                or self.user == self.request.user.profile
-            ):
+            if (self.relation.exists() or self.user == self.request.user.profile):
                 self.can_follow = False
-                self.posts = Post.objects.filter(
-                    author=self.user, archive=True
-                ).order_by("-created_date")
+                self.posts = Post.objects.filter(author=self.user, archive=True).order_by("-created_date")
         else:
             return redirect("/")
         return super().dispatch(request, *args, **kwargs)
@@ -148,25 +140,6 @@ class UpdatePostView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-"""class DetailsPostView(LoginRequiredMixin, DetailView):
-    model = Post
-    template_name = 'blog/post_detail.html'
-    form_class = CommentForm()
-    def dispatch(self, request, *args, **kwargs):
-        self.pk =kwargs['pk']
-        return super().dispatch(request, *args, **kwargs)
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['comments'] = Comment.objects.filter(post_id = self.pk,approach = True)
-        return context
-    
-    def form_valid(self, form):
-        form.instance.author_id = self.request.user.id
-        return super(DetailsPostView, self).form_valid(form)
-
-"""
-
-
 class DetailsPostView(LoginRequiredMixin, View):
     template_name = "blog/post_detail.html"
     form_class = CommentForm
@@ -174,9 +147,7 @@ class DetailsPostView(LoginRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
         self.pk = kwargs["pk"]
         self.posts = Post.objects.get(pk=self.pk, archive=True)
-        self.comment = Comment.objects.filter(
-            post_id=self.pk, approach=True
-        )
+        self.comment = Comment.objects.filter(post_id=self.pk, approach=True)
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -184,8 +155,7 @@ class DetailsPostView(LoginRequiredMixin, View):
         context = {
             "comments": self.comment,
             "post": self.posts,
-            "form": form,
-        }
+            "form": form, }
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
@@ -204,9 +174,7 @@ class FollowUserView(View):
 
     def post(self, request, *args, **kwargs):
         q = request.POST.get("search")
-        results = Profile.objects.filter(
-            user__username__icontains=q, active=True
-        )
+        results = Profile.objects.filter(user__username__icontains=q, active=True)
         context = {"results": results}
         return render(request, self.template_name, context)
 
@@ -214,9 +182,7 @@ class FollowUserView(View):
 class LikePostView(LoginRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
         self.pk = kwargs["pk"]
-        self.like = Like.objects.filter(
-            user=request.user.profile, post_id=self.pk
-        )
+        self.like = Like.objects.filter(user=request.user.profile, post_id=self.pk)
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -230,9 +196,7 @@ class LikePostView(LoginRequiredMixin, View):
 class DisLikePostView(LoginRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
         self.pk = kwargs["pk"]
-        self.dislike = DisLike.objects.filter(
-            user=request.user.profile, post_id=self.pk
-        )
+        self.dislike = DisLike.objects.filter(user=request.user.profile, post_id=self.pk)
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -256,8 +220,6 @@ class ArchivePostsView(LoginRequiredMixin, View):
         user = self.request.user.profile
         post_ids = request.POST.getlist("post_ids")
         if post_ids:
-            Post.objects.filter(id__in=post_ids, author=user).update(
-                archive=True
-            )
+            Post.objects.filter(id__in=post_ids, author=user).update(archive=True)
             return redirect("blog:home_page")
         return redirect("blog:home_page")

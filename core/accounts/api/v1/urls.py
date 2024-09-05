@@ -27,17 +27,13 @@ from .views import (
 app_name = "api-v1"
 
 router = DefaultRouter()
-router.register(
-    "followers", FollowersViewSetsApiView, basename="followers"
-)
+router.register("followers", FollowersViewSetsApiView, basename="followers")
 
 
 urlpatterns = [
     path("test/", TestEmail.as_view(), name="test"),
     # following
-    path(
-        "following/", FollowingViewSetsApiView.as_view(), name="following"
-    ),
+    path("following/", FollowingViewSetsApiView.as_view(), name="following"),
     # login user
     path("login/", LoginApiView.as_view(), name="login"),
     path("login-generic/", LoginGenericView.as_view(), name="login"),
@@ -53,9 +49,7 @@ urlpatterns = [
         ActivationResendApiView.as_view(),
         name="resend-activation",
     ),
-    path(
-        "profile/", ProfileViewSetsApiView.as_view(), name="profile-user"
-    ),
+    path("profile/", ProfileViewSetsApiView.as_view(), name="profile-user"),
     # Change password
     path(
         "change-password/",
@@ -101,7 +95,5 @@ urlpatterns = [
         TokenRefreshView.as_view(),
         name="token_refresh",
     ),
-    path(
-        "token-jwt/verify/", TokenVerifyView.as_view(), name="token_verify"
-    ),
+    path("token-jwt/verify/", TokenVerifyView.as_view(), name="token_verify"),
 ] + router.urls

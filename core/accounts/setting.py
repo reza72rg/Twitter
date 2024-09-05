@@ -24,9 +24,7 @@ class MainModel(models.Model):
     modify_date = models.DateTimeField(
         auto_now=True, blank=True, null=True, verbose_name=_("modify date")
     )
-    is_active = models.BooleanField(
-        default=True, verbose_name=_("is active")
-    )
+    is_active = models.BooleanField(default=True, verbose_name=_("is active"))
 
     def save(self, *args, **kwargs):
         image_fields = get_image_field(self)

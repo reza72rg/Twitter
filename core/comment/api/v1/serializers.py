@@ -49,15 +49,10 @@ class CommentSerializers(serializers.ModelSerializer):
         if not Post.objects.filter(
             (
                 Q(
-                    author__in=Follow.objects.filter(
-                        user=user
-                    ).values_list("follow_user", flat=True)
-                )
-                | Q(author=user)
-            )
-            & Q(id=validated_data["post"].id)
-            & Q(archive=True)
-        ).exists():
+                    author__in=Follow.objects.filter(user=user).values_list(
+                        "follow_user", flat=True
+                    )
+                ) | Q(author=user)) & Q(id=validated_data["post"].id) & Q(archive=True)).exists():
             raise ValidationError(
                 {
                     "error": "You do not have permission to comments on this post."
