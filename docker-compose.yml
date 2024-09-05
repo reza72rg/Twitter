@@ -1,7 +1,7 @@
 services:
-  postgres_twitter:
+  postgres:
     image: postgres:13
-    container_name: postgres_twitter
+    container_name: postgres
     restart: always
     environment:
       POSTGRES_DB: ${DATABASE_NAME}
@@ -12,20 +12,20 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  redis_twitter:
-    container_name: redis_twitter
+  redis:
+    container_name: redis
     image: redis
     restart: always
     ports:
       - "6382:6379"
     command: redis-server --save 60 1 --loglevel warning
 
-  backend_twitter:
+  backend:
     build: .
-    container_name: backend_twitter
+    container_name: backend
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./core:/app_test/
+      - ./core:/app/
     ports:
       - "8000:8000"
     environment:
@@ -36,11 +36,11 @@ services:
       - DATABASE_NAME=${DATABASE_NAME}
       - DATABASE_USER=${DATABASE_USER}
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
-      - DATABASE_HOST=postgres_test
+      - DATABASE_HOST=postgres
       - DATABASE_PORT=5432
     depends_on:
-      - postgres_twitter
-      - redis_twitter
+      - postgres
+      - redis
 
 
 volumes:
