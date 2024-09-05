@@ -7,16 +7,18 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
-from blog.models import Post, Like, DisLike
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+from django.urls import reverse_lazy
+from .models import Post, Like, DisLike
 from comment.models import Comment
 from comment.forms import CommentForm
 from accounts.models import Profile, Follow
-from blog.forms import PostForm
-from django.urls import reverse_lazy
+from .forms import PostForm
+
 
 # Create your views here.
-
-
+@method_decorator(cache_page(60 * 30), name="dispatch")
 class PostListView(LoginRequiredMixin, ListView):
     template_name = "blog/home.html"
     ordering = ["-created_date"]
