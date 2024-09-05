@@ -82,9 +82,7 @@ class RegisterViewSetsApiView(generics.GenericAPIView):
             )
             EmailThread(email_obj).start()
             return Response(data, status=status.HTTP_201_CREATED)
-        return Response(
-            serializer.errors, status=status.HTTP_400_BAD_REQUEST
-        )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get_tokens_for_user(self, user):
         refresh = RefreshToken.for_user(user)
@@ -166,9 +164,7 @@ class ChangePasswordViewSetsApiView(generics.GenericAPIView):
                 {"details": "password was change successfully"},
                 status=status.HTTP_200_OK,
             )
-        return Response(
-            serializer.errors, status=status.HTTP_400_BAD_REQUEST
-        )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginGenericView(generics.GenericAPIView):
@@ -186,9 +182,7 @@ class LoginGenericView(generics.GenericAPIView):
             if user is not None and user.is_active:
                 login(request, user)
                 return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(
-            serializer.errors, status=status.HTTP_400_BAD_REQUEST
-        )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginApiView(APIView):
@@ -206,9 +200,7 @@ class LoginApiView(APIView):
             if user is not None and user.is_active:
                 login(request, user)
                 return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(
-            serializer.errors, status=status.HTTP_400_BAD_REQUEST
-        )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class TestEmail(generics.GenericAPIView):
@@ -342,6 +334,4 @@ class ResetPasswordConfirmApiView(APIView):
                 {"details": "password was change successfully"},
                 status=status.HTTP_200_OK,
             )
-        return Response(
-            serializer.errors, status=status.HTTP_400_BAD_REQUEST
-        )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

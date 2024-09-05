@@ -50,28 +50,6 @@ class LogoutSuccessView(TemplateView):
     template_name = "accounts/logout.html"
 
 
-"""class ProfileView(LoginRequiredMixin, View):
-    form_class = UserUpdateForm
-    template_name = 'accounts/profile.html'
-    second_form_class = ProfileUpdateForm
-    
-    def get(self, request, *args, **kwargs):
-        uform = self.form_class(instance=request.user)
-        pform = self.second_form_class(instance=request.user.profile)
-        content = {'uform':uform,'pform':pform}
-        return render (request , self.template_name,content)
-    def post(self, request, *args, **kwargs):
-        uform = self.form_class(request.POST, instance=request.user) 
-        pform = self.second_form_class(request.POST, request.FILES, instance=request.user.profile) 
-        if uform.is_valid() and pform.is_valid():
-            uform.save()
-            pform.save() 
-            return redirect('/')
-        content = {'uform':uform,'pform':pform}
-        return render (request , self.template_name,content)
-       """
-
-
 class ProfileEditView(LoginRequiredMixin, UpdateView):
     template_name = "accounts/profile.html"
     model = Profile
@@ -89,7 +67,5 @@ class ProfileEditView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["username"] = User.objects.get(
-            username=self.request.user.profile
-        )
+        context["username"] = User.objects.get(username=self.request.user.profile)
         return context

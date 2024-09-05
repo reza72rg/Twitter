@@ -51,15 +51,11 @@ class ProfileSerializers(serializers.ModelSerializer):
                 instance, validated_data
             )
         else:
-            raise ValidationError(
-                {"error": "Bad request."}, code="invalid"
-            )
+            raise ValidationError({"error": "Bad request."}, code="invalid")
 
 
 class UserTestSerializers(serializers.ModelSerializer):
-    username = serializers.CharField(
-        source="user.username", read_only=True
-    )
+    username = serializers.CharField(source="user.username", read_only=True)
 
     class Meta:
         model = Profile
@@ -87,9 +83,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         try:
             validate_password(attrs.get("password"))
         except exceptions.ValidationError as e:
-            raise serializers.ValidationError(
-                {"password": list(e.messages)}
-            )
+            raise serializers.ValidationError({"password": list(e.messages)})
         return super().validate(attrs)
 
     def create(self, validated_data):
@@ -197,9 +191,7 @@ class CustomTokenSerializer(serializers.Serializer):
             # backend.)
             if not user:
                 msg = _("Unable to log in with provided credentials.")
-                raise serializers.ValidationError(
-                    msg, code="authorization"
-                )
+                raise serializers.ValidationError(msg, code="authorization")
             if not user.profile.is_verified:
                 raise serializers.ValidationError(
                     {"details": "user is not verified"}
@@ -246,9 +238,7 @@ class LoginSerializer(serializers.Serializer):
             )
             if not user:
                 msg = _("Unable to log in with provided credentials.")
-                raise serializers.ValidationError(
-                    msg, code="authorization"
-                )
+                raise serializers.ValidationError(msg, code="authorization")
         else:
             msg = _('Must include "username" and "password".')
             raise serializers.ValidationError(msg, code="authorization")
