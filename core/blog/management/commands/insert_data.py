@@ -1,8 +1,7 @@
 from django.core.management.base import BaseCommand
 from faker import Faker
 from accounts.models import User, Profile, Follow
-from blog.models import Category, Post, Like, DisLike
-
+from ...models import Category, Post, Like, DisLike
 from comment.models import Comment
 
 

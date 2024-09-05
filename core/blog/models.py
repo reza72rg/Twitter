@@ -1,8 +1,7 @@
 from django.db import models
 from django.urls import reverse
-from accounts.models import Profile
 from core.tools import UploadToPathAndRename
-from accounts.models import MainModel
+from accounts.models import MainModel, Profile
 
 # from comment.models import Comment
 

@@ -1,5 +1,5 @@
 from django.test import TestCase
-from ..models import Post, Category, Like, DisLike
+from blog.models import Post, Category, Like, DisLike
 from accounts.models import User, Profile
 
 
