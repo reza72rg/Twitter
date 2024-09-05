@@ -20,9 +20,9 @@ services:
       - "6382:6379"
     command: redis-server --save 60 1 --loglevel warning
 
-  backend_test:
+  backend:
     build: .
-    container_name: backend_test
+    container_name: backend
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./core:/app_test/
@@ -49,7 +49,7 @@ services:
       - ./core:/app_test/
     depends_on:
       - redis_test
-      - backend_test
+      - backend
 
   smtp4dev:
     image: rnwood/smtp4dev:v3
