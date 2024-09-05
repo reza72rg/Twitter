@@ -16,7 +16,7 @@ jobs:
 
       # Install Docker Compose
       - name: Install Docker Compose
-        run: sudo apt-get update && sudo apt-get install -y docker-compose-stage.yml
+        run: sudo apt-get update && sudo apt-get install -y docker-compose-stage
 
       - name: Run Tests
         run: docker exec backend_twitter sh -c "flake8 && pytest ."
