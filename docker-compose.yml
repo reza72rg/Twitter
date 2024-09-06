@@ -1,7 +1,7 @@
 services:
-  postgres_test:
+  postgres:
     image: postgres:13
-    container_name: postgres_test
+    container_name: postgres
     restart: always
     environment:
       POSTGRES_DB: ${DATABASE_NAME}
@@ -12,20 +12,20 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  redis_test:
-    container_name: redis_test
+  redis:
+    container_name: redis
     image: redis
     restart: always
     ports:
       - "6382:6379"
     command: redis-server --save 60 1 --loglevel warning
 
-  backend_test:
+  backend:
     build: .
-    container_name: backend_test
+    container_name: backend
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./core:/app_test/
+      - ./core:/app/
     ports:
       - "8000:8000"
     environment:
@@ -36,47 +36,12 @@ services:
       - DATABASE_NAME=${DATABASE_NAME}
       - DATABASE_USER=${DATABASE_USER}
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
-      - DATABASE_HOST=postgres_test
+      - DATABASE_HOST=postgres
       - DATABASE_PORT=5432
     depends_on:
-      - postgres_test
-      - redis_test
+      - postgres
+      - redis
 
-  worker_test:
-    build: .
-    command: celery -A core worker --loglevel warning
-    volumes:
-      - ./core:/app_test/
-    depends_on:
-      - redis_test
-      - backend_test
-
-  smtp4dev:
-    image: rnwood/smtp4dev:v3
-    restart: always
-    ports:
-      - '5000:80'
-      - '25:25'
-      - '143:143'
-    volumes:
-      - smtp4dev-data:/smtp4dev
-    environment:
-      - ServerOptions__HostName=smtp4dev
-
-  master:
-    image: locustio/locust
-    ports:
-      - "8089:8089"
-    volumes:
-      - ./core/locust:/mnt/locust
-    command: -f /mnt/locust/locustfile.py --master -H http://backend_twitter:8000
-
-  locust_worker:
-    image: locustio/locust
-    volumes:
-      - ./core/locust:/mnt/locust
-    command: -f /mnt/locust/locustfile.py --worker --master-host master
 
 volumes:
   postgres_data:
-  smtp4dev-data:
